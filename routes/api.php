@@ -1,0 +1,42 @@
+<?php
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CandidateAnswerController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\CandidateNoteController;
+use App\Http\Controllers\InterviewController;
+use App\Http\Controllers\SubjectController;
+use App\Models\CandidateAnswer;
+use App\Models\Interview;
+use App\Models\Question;
+
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "api" middleware group. Make something great!
+|
+*/
+
+Route::middleware('auth:sanctum')->group(function() {
+    
+    Route::get('/student-answers/{candidate_id}/{interview_id}', [CandidateAnswerController::class, 'candidateInterviewAnswers'])->name('student_answers.studentTestAnswers');
+    
+    Route::get('/is-student-passed/{interview_id}/{candidate_id}', [CandidateNoteController::class, 'checkCandidateNotes'])->name('student_note.checkCandidateNotes');
+       
+    Route::get('tests/{post_id}', [InterviewController::class, 'getPostInterview'])->name('tests.getPostTest');
+
+    Route::get('/is-expired/{interview_id}', [InterviewController::class, 'checkInterviewExpiration'])->name('tests.checkInterviewExpiration');
+
+    Route::get('questions/{id}', [SubjectController::class, 'getQuestionsSubject'])->name('subjects.getQuestionsSubject');
+
+    Route::post('/answer', [CandidateAnswerController::class, 'store'])->name('student_answers.store');
+
+    Route::post('/logout', [AuthenticatedSessionController::class, 'apiDestroy']) ->name('logout');
+    
+});
+
