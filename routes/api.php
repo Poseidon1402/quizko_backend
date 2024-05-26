@@ -21,6 +21,7 @@ use App\Models\Question;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+Route::post('/subscribe', [AuthenticatedSessionController::class, 'subscribeCandidate'])->name('subscribe_candidate');
 
 Route::middleware('auth:sanctum')->group(function() {
     
@@ -39,4 +40,3 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::post('/logout', [AuthenticatedSessionController::class, 'apiDestroy']) ->name('logout');
     
 });
-

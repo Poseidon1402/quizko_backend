@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('candidates', function (Blueprint $table) {
             $table->id();
+            $table->string('registration_number', length: 10)->unique();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('post_id');
+            $table->unsignedBigInteger('post_id')->nullable();
             $table->enum('status', ['admitted', 'pending', 'failed'])->default('pending')->nullable();
             $table->enum('gender', ['masculine', 'feminine']);
             $table->timestamps();
-
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
         });

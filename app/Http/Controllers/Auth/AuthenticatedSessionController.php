@@ -10,7 +10,11 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\Rules;
 use Inertia\Inertia;
+use App\Models\User;
+use App\Models\Candidate;
+use Illuminate\Support\Facades\Hash;
 use Inertia\Response;
 
 class AuthenticatedSessionController extends Controller
@@ -41,18 +45,67 @@ class AuthenticatedSessionController extends Controller
     */
    public function apiStore(LoginRequest $request): JsonResponse
     {
-        if($request->authenticateApi()){
+        if($request->authenticateApi()) {
             $user = $request->user();
             $user->tokens()->delete();
             $token = $user->createToken('api-token');
             $user->load('candidate.post');
+
             return response()->json([
                 'user' => $user,
                 'token' => $token->plainTextToken,
             ], 200); 
-        }else{
+        } else {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
+    }
+
+    public function subscribeCandidate(Request $request): JsonResponse
+    {
+      $user = User::where('email', $request->email)->first();
+      $candidate = Candidate::where('registration_number', $request->registration_number)->first();
+
+      if($user) {
+        return response()->json([
+          'code' => 'duplicated email',
+          'message' => 'Duplicated email'
+        ], 400);
+      }
+
+      if($candidate) {
+        return response()->json([
+          'code' => 'duplicated registration number',
+          'message' => 'Duplicated registration number'
+        ], 400);
+      }
+
+      $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|string|lowercase|email|max:255',
+        'password' => ['required'],
+        'gender' => 'required'
+      ]);
+
+      $user = User::create([
+          'name' => $request->name,
+          'email' => $request->email,
+          'password' => Hash::make($request->password),
+      ]);
+
+      $candidate = new Candidate();
+      $candidate->registration_number = $request->input('registration_number');
+      $candidate->user_id = $user->id;
+      $candidate->post_id = 1;
+      $candidate->gender = $request->input('gender');
+      $candidate->save();
+
+      $user->load('candidate.post');
+
+      return response()->json([
+        'user' => $user,
+        'token' => $user->createToken('api-token')->plainTextToken,
+      ], 201); 
+
     }
     
     /**
