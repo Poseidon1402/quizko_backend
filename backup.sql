@@ -49,10 +49,10 @@ UNLOCK TABLES;
 -- Table structure for table `candidate_answer`
 --
 
-DROP TABLE IF EXISTS `candidate_answer`;
+DROP TABLE IF EXISTS `candidate_answers`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `candidate_answer` (
+CREATE TABLE `candidate_answers` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `point` int DEFAULT NULL,
   `answer_of_candidate` text COLLATE utf8mb4_unicode_ci,
@@ -75,9 +75,9 @@ CREATE TABLE `candidate_answer` (
 -- Dumping data for table `candidate_answer`
 --
 
-LOCK TABLES `candidate_answer` WRITE;
-/*!40000 ALTER TABLE `candidate_answer` DISABLE KEYS */;
-/*!40000 ALTER TABLE `candidate_answer` ENABLE KEYS */;
+LOCK TABLES `candidate_answers` WRITE;
+/*!40000 ALTER TABLE `candidate_answers` DISABLE KEYS */;
+/*!40000 ALTER TABLE `candidate_answers` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --

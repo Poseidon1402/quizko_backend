@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('candidate_answer', function (Blueprint $table) {
+        Schema::create('candidate_answers', function (Blueprint $table) {
             $table->id();
             $table->integer('point')->nullable();
             $table->text('answer_of_candidate')->nullable();
