@@ -10,8 +10,12 @@ export default defineConfig({
         }),
         react(),
     ],
-    server: {
-        host: "127.0.0.1",
-        port: 8090,
+    build: {
+        outDir: "public/js",
+        emptyOutDir: true,
+        manifest: true,
+        rollupOptions: {
+            input: "resources/js/app.jsx",
+        },
     },
 });

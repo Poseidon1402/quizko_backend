@@ -82,7 +82,7 @@ class CandidateAnswerController extends Controller
                 $data = $request->validate([
                     'candidate_id' => 'required|exists:candidates,id',
                     'interview_id' => 'required|exists:interviews,id',
-                    'candidate_answers' => 'required|array',
+                    'candidate_answers' => 'array',
                     'candidate_answers.*.answer_id' => 'required|exists:answers,id',
                     'candidate_answers.*.answer_of_candidate' => 'nullable',
                 ]);
