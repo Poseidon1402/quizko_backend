@@ -1,59 +1,50 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import Datagrid from "@/Components/Datagrid";
 import Modal from "@/Components/Modal";
-import { PencilIcon, EyeIcon,TrashIcon, CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import Form from "./Form";
-import { Transition } from "@headlessui/react";
-import { Head, Link, useForm } from "@inertiajs/react";
+import { EyeIcon, CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Head,  useForm } from "@inertiajs/react";
 import { useEffect, useMemo, useState } from "react";
 import PrimaryButton from "@/Components/PrimaryButton";
 import SecondaryButton from "@/Components/SecondaryButton";
-import { CSVLink } from "react-csv";
-
-
+import { CSVLink } from 'react-csv';
 export default function Detail({ auth, candidate_answers, interview, interviewResults}) {
     const [showAnswerModal, setShowAnswerModal] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
-    const [selectedData, setSelectedData] = useState(null);
-    const [selectedCandidate, setSelectedCandidate] = useState(null); // État pour stocker les détails du candidat sélectionné
+    const [selectedCandidate, setSelectedCandidate] = useState(null); 
     const [showModal, setShowModal] = useState(false); 
     const {
         data,
         setData,
-        post,
         put,
         delete: destroy,
-        processing,
-        errors,
         reset,
-        cancel,
         hasErrors,
         recentlySuccessful,
     } = useForm({
         note: null,  
     });
-    const excelResult = interviewResults.map(result => {
+      // Trier les candidats par matricule
+    const sortedCandidates = useMemo(() => {
+        return candidate_answers.sort((a, b) => a.matricule.localeCompare(b.matricule));
+    }, [candidate_answers]);
+      
+    const excelResult = sortedCandidates.map(result => {
         return {
-            Matricule: result.candidate.id,
-            Nom: result.candidate.user.last_name,
-            Prénom: result.candidate.user.first_name,
-            Classe: result.candidate.post.name,
-            Note: result.note,
+             Matricule: result.candidate.matricule,
+             Nom: result.candidate.name,
+             Classe: interview[0].post.name,
+             Note: result.note.note!==null?result.note.note:result.note.interim_note,
         };
     });
-    const filename ="Résultat_"+interview.name+".csv";
 
-    // const columns = useColumns({
-    //     onEdit: (data) => {
-    //         setSelectedData(data);
-    //         setData(data);
-    //         setShowEditionModal(true);
-    //     },
-    //     onDelete: (data) => {
-    //         setSelectedData(data);
-    //         setShowDeletionModal(true);
-    //     },
-    // });
+    const filename ="Résultat_"+interview[0].name+".xlsx";
+ 
+    const columns = useColumns({
+        onView: (data) => {
+            handleViewCandidateDetails(data);
+        },
+    });
+   
     useEffect(() => {
         if (hasErrors) {
             reset("note");
@@ -69,48 +60,27 @@ export default function Detail({ auth, candidate_answers, interview, interviewRe
         }
     }, [hasErrors, recentlySuccessful]);
 
-    // const handleCreationSubmit = (e) => {
-    //     e.preventDefault();
-    //     post(route("departments.store"));
-    // };
-
     const handleEditionSubmit = (e) => {
         e.preventDefault();
         put(route("student_note.update", selectedCandidate.note));
-        //console.log(data);
         setShowModal(false);
     };
 
-    // const handleDeletionSubmit = (e) => {
-    //     e.preventDefault();
-    //     destroy(route("departments.destroy", selectedData));
-    //     setSelectedData(null);
-    //     setShowDeletionModal(false);
-    // };
-    
-  const filteredCandidates = candidate_answers.filter(candidate_answer =>
-    candidate_answer.candidate.name.toLowerCase().includes(searchTerm.toLowerCase())||candidate_answer.candidate.last_name.toLowerCase().includes(searchTerm.toLowerCase())||candidate_answer.candidate.first_name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const handleInputChange = (e) => {
-    setSearchTerm(e.target.value);
-  };
   const handleViewCandidateDetails = (candidate) => {
     setSelectedCandidate(candidate);
     setShowModal(true);
   };
-    console.log(candidate_answers);
-    console.log(interview);
+ 
     return (
         <AuthenticatedLayout
             user={auth.user}
             header={
-                <h2 className="font-semibold text-xl text-gray-800 light:text-gray-200  leading-tight">
-                      Réponses du test {interview.name}
+                <h2 className="font-semibold text-xl text-center text-gray-600 light:text-gray-200  leading-tight">
+                      Réponses du test: " {interview[0].name} ", classe: " {interview[0].post.name} ""
                 </h2>
             }
         >
-            <Head title="Dashboard" />
+            <Head title="Résultat" />
             <div className="text-end">
                 <CSVLink 
                 data={excelResult}
@@ -118,39 +88,15 @@ export default function Detail({ auth, candidate_answers, interview, interviewRe
                     className="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
                 >Exporter en Excel</CSVLink>
             </div>
-            <div className="py-5">
-                <input
-                    type="text"
-                    placeholder="Recherche..."
-                    value={searchTerm}
-                    onChange={handleInputChange}
-                    className="w-full p-3 m-2 border border-gray-300 rounded-md shadow-sm focus:border-blue-400 focus:ring focus:ring-blue-200"
-                />
-              <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    {filteredCandidates.length > 0 ? (
-                        filteredCandidates.map((candidate_answer) => (
-                            <div key={candidate_answer.candidate.id} className="mb-4 p-4 bg-white rounded-md shadow-md flex flex-col items-center justify-center">
-                                <div className="text-lg font-semibold">
-                                    {candidate_answer.candidate.name}
-                                </div>
-                                <div className="text-sm text-gray-500">
-                                    {candidate_answer.candidate.first_name} {candidate_answer.candidate.last_name}
-                                </div>
-                                <div className="text-sm m-2 text-gray-500">
-                                    {candidate_answer.note.note===null?<span className="text-red-800">Note provisoir: {candidate_answer.note.interim_note}</span>:<span >Note: {candidate_answer.note.note}</span>} 
-                                </div>
-                                <PrimaryButton
-                                    onClick={() => handleViewCandidateDetails(candidate_answer)}
-                                > Voir
-                                </PrimaryButton>
-                              
-                            </div>
-                        ))
-                    ) : (
-                        <div className="text-red-500 text-center">Aucun résultat...</div>
-                    )}
-                </div>
-            </div>     
+            <div className="py-12">
+                   <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                        <Datagrid
+                            columns={columns}
+                            rows={sortedCandidates}
+                            canCreate={false}
+                        />
+                    </div>
+            </div>
               {/* Modal pour afficher les détails du candidat */}
         {selectedCandidate&&
             <Modal
@@ -224,3 +170,48 @@ export default function Detail({ auth, candidate_answers, interview, interviewRe
         </AuthenticatedLayout>
     );
 }
+const useColumns = (
+    props,
+)=> {
+    return useMemo(() => {
+        return [
+            {
+                accessorKey: "candidate.matricule",
+                cell: (info) =>
+                    `${(info.getValue())}`,
+                header: () => "Matricule",
+            },
+            {
+                accessorKey: "candidate.name",
+                cell: (info) =>
+                    `${(info.getValue())}`,
+                header: () => "Nom et prénom",
+            },
+             {
+                accessorKey: "note",
+                cell: (info) =>(<span>{(info.getValue().note)===null?"Note provisoire : " +info.getValue().interim_note:"Note : " +info.getValue().note}</span>),
+                header: () => "Note",
+            },
+           {
+                accessorFn: (row) => row,
+                id: "id",
+                cell: (info) => (
+                    <div className="flex space-x-2">
+                        <button
+                             className={
+                                "p-1 border border-transparent rounded-md"
+                            }
+                            onClick={() =>{ 
+                                 props.onView(info.getValue() );
+                             }}
+                        >
+                           <EyeIcon className="w-5 h-5 text-gray-600" />   
+                        </button>
+                </div>
+                
+                ),
+                header: () => "Action",
+            },
+        ];
+    }, [props]);
+};

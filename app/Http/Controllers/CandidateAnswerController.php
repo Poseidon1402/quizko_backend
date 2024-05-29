@@ -17,7 +17,7 @@ class CandidateAnswerController extends Controller
      */
     public function index($id)
         {
-            $interview= Interview::findOrFail($id);
+            $interview= Interview::findOrFail($id)->with('post')->get();
             $interviewResults= CandidateNote::where('interview_id', $id)->with(['candidate.user','candidate.post'])->get();
             $candidateAnswers = CandidateAnswer::with(['answer.question', 'interview.candidate_notes', 'candidate.user','candidate.candidate_notes.interview'])
                 ->where('interview_id', $id)
@@ -31,8 +31,8 @@ class CandidateAnswerController extends Controller
                         'candidate' => [
                             'id' => $candidateAnswer->candidate_id,
                             'name' => $candidateAnswer->candidate->user->name,
-                            'first_name' => $candidateAnswer->candidate->user->first_name,
-                            'last_name' => $candidateAnswer->candidate->user->last_name,              
+                            'matricule' => $candidateAnswer->candidate->registration_number,     
+                            // 'last_name' => $candidateAnswer->candidate->user->last_name,              
                         ],
                         'answers' => [],
                         //'note' => $candidateAnswer->candidate->candidate_notes[0]->note,
