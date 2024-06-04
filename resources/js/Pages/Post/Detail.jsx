@@ -99,18 +99,17 @@ export default function Index({ auth, post}) {
             }
         >
             <Head title="Etudiant" />
-
-            <div className="py-12">
-                <Link
+            <Link
                     className="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150"
                     href="/levels"
                 >Retour</Link>
-                 <ImportExcel />
+            <div className="py-12">
+
                    <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                         <Datagrid
                             columns={columns}
                             rows={post.candidates}
-                            onCreate={() => setShowCreationModal(true)}
+                            canCreate={false}
                         />
                     </div>
                     <Modal
@@ -160,10 +159,8 @@ const useColumns = (
                 accessorFn: (row) => row.user,
                 id: "last_name",
                 cell: (info) => {
-                    const { email, phone, first_name, last_name } =
+                    const { email, phone, name } =
                         info.getValue();
-                    const name = `${first_name} ${last_name}`;
-
                     return (
                         <div className="flex items-center gap-2">
                             <Avatar size="lg" src="" alt={name} />
@@ -195,57 +192,7 @@ const useColumns = (
                     `${(info.getValue())}`,
                 header: () => "Genre",
             },
-            {
-                accessorKey: "user.address",
-                cell: (info) =>
-                    `${(info.getValue())}`,
-                header: () => "Adresse",
-            },
     
-           {
-                accessorFn: (row) => row,
-                id: "id",
-                cell: (info) => (
-                    <div className="flex space-x-2">
-                    <Link
-                         href={`/departments/${(info.getValue()).id}`}
-                         className={
-                            "p-1 border border-transparent rounded-md"
-                        }
-                        
-                    >
-                        <EyeIcon className="w-5 h-5 text-gray-600" />
-                     
-                    </Link>
-                
-                        <button
-                           className={
-                            "p-1 border border-transparent rounded-md"
-                        }
-                            onClick={() =>{ 
-                                 props.onEdit(info.getValue() );
-                             }}
-                        >
-                            <PencilIcon className="w-5 h-5 text-green-600" /> 
-                        
-                        </button>
-                        <button
-                            className={
-                                "p-1 border border-transparent rounded-md"
-                            }
-                            onClick={() =>{
-                                props.onDelete(info.getValue());
-                            }}
-                        >
-                            <TrashIcon className="w-5 h-5 text-red-600" />
-                          
-                        </button>
-
-                </div>
-                
-                ),
-                header: () => "Action",
-            },
         ];
     }, [props]);
 };

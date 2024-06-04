@@ -74,7 +74,7 @@ export default function Index({ auth, departments}) {
         setSelectedData(null);
         setShowDeletionModal(false);
     };
-    console.log(departments);
+
     return (
         <AuthenticatedLayout
             user={auth.user}

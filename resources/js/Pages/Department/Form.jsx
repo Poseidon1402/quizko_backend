@@ -6,8 +6,6 @@ import SecondaryButton from "@/Components/SecondaryButton";
 import TextInput from "@/Components/TextInput";
 import {  useEffect } from "react";
 
-
-
 export default function Form({
     mode = "creation",
     data,

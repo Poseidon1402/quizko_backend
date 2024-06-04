@@ -46,11 +46,6 @@ export default function Index({ auth, candidates, posts}) {
         password_confirmation: "",
     });
     const columns = useColumns({
-        onEdit: (data) => {
-            setSelectedData(data);
-            setData(data);
-            setShowEditionModal(true);
-        },
         onDelete: (data) => {
             setSelectedData(data);
             setShowDeletionModal(true);
@@ -157,10 +152,8 @@ const useColumns = (
                 accessorFn: (row) => row.user,
                 id: "last_name",
                 cell: (info) => {
-                    const { email, phone, first_name, last_name } =
+                    const { email, phone, name } =
                         info.getValue();
-                    const name = `${first_name} ${last_name}`;
-
                     return (
                         <div className="flex items-center gap-2">
                             <Avatar size="lg" src="" alt={name} />
@@ -198,40 +191,13 @@ const useColumns = (
                     `${(info.getValue())}`,
                 header: () => "Classe",
             },
-            {
-                accessorKey: "user.address",
-                cell: (info) =>
-                    `${(info.getValue())}`,
-                header: () => "Adresse",
-            },
     
            {
                 accessorFn: (row) => row,
                 id: "id",
                 cell: (info) => (
                     <div className="flex space-x-2">
-                    <Link
-                         href={`/departments/${(info.getValue()).id}`}
-                         className={
-                            "p-1 border border-transparent rounded-md"
-                        }
-                        
-                    >
-                        <EyeIcon className="w-5 h-5 text-gray600"  />
-                     
-                    </Link>
-                
-                        <button
-                           className={
-                            "p-1 border border-transparent rounded-md"
-                        }
-                            onClick={() =>{ 
-                                 props.onEdit(info.getValue() );
-                             }}
-                        >
-                            <PencilIcon className="w-5 h-5 text-green-600"  /> 
-                        
-                        </button>
+                 
                         <button
                            className={
                             "p-1 border border-transparent rounded-md"

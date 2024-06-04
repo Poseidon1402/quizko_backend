@@ -14,7 +14,6 @@ import { Transition } from "@headlessui/react";
 import DeletionConfirmation from "@/Components/DeletionConfirmation";
 
 export default function Index({ auth, recruiters, departments}) {
-    console.log(recruiters);
 
     const [showCreationModal, setShowCreationModal] = useState(false);
     const [showDeletionModal, setShowDeletionModal] = useState(false);
@@ -106,8 +105,6 @@ export default function Index({ auth, recruiters, departments}) {
                         <Datagrid
                             columns={columns}
                             rows={recruiters}
-                           // canCreate={auth.user.can.createBroker}
-                            onCreate={() => setShowCreationModal(true)}
                         />
                     </div>
                     <Modal
@@ -154,7 +151,7 @@ export default function Index({ auth, recruiters, departments}) {
                     >
                         <DeletionConfirmation
                             name={
-                                selectedData?.name
+                                selectedData?.user.name
                             }
                             onCancel={() => {
                                 cancel();
@@ -177,9 +174,8 @@ const useColumns = (
                 accessorFn: (row) => row.user,
                 id: "last_name",
                 cell: (info) => {
-                    const { email, phone, first_name, last_name } =
+                    const { email, phone, name } =
                         info.getValue();
-                    const name = `${first_name} ${last_name}`;
 
                     return (
                         <div className="flex items-center gap-2">

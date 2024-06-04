@@ -38,7 +38,7 @@ export default function Avatar({
                 <div
                     className={`inline-block ${sizeClass} rounded-full ring-1 ring-gray-800 flex items-center justify-center font-bold ${className}`}
                     style={{ backgroundColor: stringToColor(alt) }}
-                >{`${alt.split(" ")[0][0]}${alt.split(" ")[1][0]}`}</div>
+                >{`${alt.slice(0, 2)}`}</div>
             )}
         </>
     );
