@@ -1,15 +1,12 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\PasswordResetController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CandidateAnswerController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CandidateNoteController;
 use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\SubjectController;
-use App\Models\CandidateAnswer;
-use App\Models\Interview;
-use App\Models\Question;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,5 +35,11 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::post('/answer', [CandidateAnswerController::class, 'store'])->name('student_answers.store');
 
     Route::post('/logout', [AuthenticatedSessionController::class, 'apiDestroy']) ->name('logout');
+
+    Route::post('/send-reset-code', [PasswordResetController::class, 'sendResetCode']);//email
+
+    Route::post('/verify-reset-code', [PasswordResetController::class, 'verifyResetCode']);//email, token
+
+    Route::post('/reset-password', [PasswordResetController::class, 'resetPassword']);//email, token , new_password
     
 });
