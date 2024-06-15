@@ -53,7 +53,7 @@ class PasswordResetController extends Controller
         $request->validate([
             'email' => 'required|email|exists:users,email',
             'token' => 'required|string',
-            'new_password' => 'required|string|min:6|confirmed',
+            'new_password' => 'required|string|min:6',
         ]);
         
         $passwordReset = PasswordResetToken::where('email', $request->email)

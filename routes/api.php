@@ -1,12 +1,14 @@
 <?php
 
-use App\Http\Controllers\PasswordResetController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CandidateAnswerController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CandidateNoteController;
 use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\Auth\PasswordController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PasswordResetController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,6 +21,12 @@ use App\Http\Controllers\SubjectController;
 |
 */
 Route::post('/subscribe', [AuthenticatedSessionController::class, 'subscribeCandidate'])->name('subscribe_candidate');
+
+Route::post('/send-reset-code', [PasswordResetController::class, 'sendResetCode']);//email
+
+Route::post('/verify-reset-code', [PasswordResetController::class, 'verifyResetCode']);//email, token
+        
+Route::post('/new-password', [PasswordResetController::class, 'resetPassword']);//email, token , new_password
 
 Route::middleware('auth:sanctum')->group(function() {
     
@@ -36,10 +44,7 @@ Route::middleware('auth:sanctum')->group(function() {
 
     Route::post('/logout', [AuthenticatedSessionController::class, 'apiDestroy']) ->name('logout');
 
-    Route::post('/send-reset-code', [PasswordResetController::class, 'sendResetCode']);//email
-
-    Route::post('/verify-reset-code', [PasswordResetController::class, 'verifyResetCode']);//email, token
-
-    Route::post('/reset-password', [PasswordResetController::class, 'resetPassword']);//email, token , new_password
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');//   name: "John Doe", email: "john.doe@example.com", registration_number: "123456789", gender: "male",post_id: 1
     
+    Route::put('/password', [PasswordController::class, 'update'])->name('password.update'); //  current_password: "oldpassword123", password: "newpassword123", password_confirmation: "newpassword123"
 });
