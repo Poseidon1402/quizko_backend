@@ -24,22 +24,52 @@ class ProfileController extends Controller
         ]);
     }
 
-    /**
+       /**
      * Update the user's profile information.
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    public function update(ProfileUpdateRequest $request)
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        try {
+
+            $user->fill($request->validated());
+
+            if ($user->isDirty('email')) {
+                $user->email_verified_at = null;
+            }
+
+            $user->save();
+
+            if ($user->role === 'candidate') {
+                $candidate = $user->candidate;
+                if ($candidate) {
+                    $candidateData = $request->only(['registration_number', 'gender', 'post_id']);
+                    $candidate->update($candidateData);
+                    
+                    $user->load('candidate');
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => 'Profile updated successfully',
+                        'user' => $user,
+                    ]);
+                }
+            }
+
+            return Redirect::route('profile.edit')->with('status', 'Profile updated successfully');
+            
+        } catch (\Exception $e) {
+            if ($user->role === 'candidate') {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Failed to update profile or candidate',
+                    'error' => $e->getMessage()
+                ], 500);
+            }
+
+            return Redirect::route('profile.edit')->withErrors(['error' => 'Failed to update profile']);
         }
-
-        $request->user()->save();
-
-        return Redirect::route('profile.edit');
     }
-
     /**
      * Delete the user's account.
      */

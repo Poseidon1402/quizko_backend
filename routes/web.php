@@ -12,13 +12,10 @@ use App\Http\Controllers\RecruiterController;
 use App\Http\Controllers\SubjectController;
 use App\Models\Candidate;
 use App\Models\CandidateAnswer;
-use App\Models\Department;
 use App\Models\Interview;
 use App\Models\Subject;
-use App\Models\Post;
 use App\Models\Question;
 use App\Models\Recruiter;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -41,9 +38,11 @@ use Inertia\Inertia;
 //         'phpVersion' => PHP_VERSION,
 //     ]);
 // });
+
 Route::get('/', function () {
     return redirect(route('dashboard'));
 })->middleware(['auth', 'verified']);
+
 
 Route::get('/dashboard', function () {
      $candidate_count = Candidate::count();
