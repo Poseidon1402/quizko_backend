@@ -8,6 +8,7 @@ use App\Models\CandidateAnswer;
 use App\Models\CandidateNote;
 use App\Models\Interview;
 use Inertia\Inertia;
+use App\Http\Controllers\TextSimilarityController;
 
 class CandidateAnswerController extends Controller
 {
@@ -59,23 +60,40 @@ class CandidateAnswerController extends Controller
         
         public function candidateInterviewAnswers($candidate_id, $interview_id)
         {
-
-           // $candidate= Candidate::findOrFail($candidate_id);
-        
-            $candidateAnswers = CandidateAnswer::with(['answer.question'])
+       
+            $candidateAnswers = CandidateAnswer::with(['answer.question.answers'])
                 ->where('candidate_id', $candidate_id)
                 ->where('interview_id', $interview_id)
                 ->get();
-            $note=CandidateNote::where('interview_id', $interview_id)
+        
+            $note = CandidateNote::where('interview_id', $interview_id)
                 ->where('candidate_id', $candidate_id)
-                 ->first();
-                 $data = [
-                    'answers' => $candidateAnswers,
-                    'note' => $note
+                ->first();
+        
+            $data = $candidateAnswers->map(function ($candidateAnswer) {
+                $questionAnswers = $candidateAnswer->answer->question->answers->map(function ($answer) use ($candidateAnswer) {
+                    return [
+                        'answer' => $answer->answer,
+                        'is_correct' => $answer->is_correct,
+                        'is_candidate_answer' => $candidateAnswer->answer_id == $answer->id,
+                        'candidate_answer' => $candidateAnswer->answer_of_candidate,
+                    ];
+                });
+        
+    
+                return [
+                    'question' => $candidateAnswer->answer->question->question,
+                    'question_type' => $candidateAnswer->answer->question->type,
+                    'answers' => $questionAnswers,
                 ];
-                
-                return response()->json(["data"=>$data]);
+            });
+  
+            return response()->json([
+                'data' => $data,
+                'note' => $note,
+            ]);
         }
+        
         
          public function store(Request $request)
         {
@@ -91,14 +109,25 @@ class CandidateAnswerController extends Controller
             
                 foreach ($data['candidate_answers'] as $candidateAnswer) {
                     $answer = Answer::find($candidateAnswer['answer_id']);
-                    $isCandidateAnswer=!empty($candidateAnswer['answer_of_candidate']);
-                    // Vérifier si la réponse du candidat est correcte
-                    if ($answer->is_correct && !$isCandidateAnswer) {
+                    $question = $answer->question;
+                    
+                    // Vérifier si la réponse quiz du candidat est correcte 
+                    if ($answer->is_correct && $question->type === 'quiz') {
                         // Si oui, attribuer le nombre de points de la question
                         $totalPoints += $answer->question->point;
-                    } elseif ($isCandidateAnswer) {
-                       // $point=getPoint($answer->answer, $candidateAnswer['answer_of_candidate'], $answer->question->point);
-                       //$totalPoints += $point;
+                    } elseif ($question->type === 'response') {
+                        try {
+                            $similarityController = app(TextSimilarityController::class);
+                            $response = $similarityController->evaluate($answer->answer, $candidateAnswer['answer_of_candidate']);
+                            $responseData = $response->getData();
+                            $similarity = $responseData->similarity;
+                            $point = $answer->question->point * $similarity;
+                            $point = $this->roundPoint($point);
+
+                            $totalPoints += $point;
+                        } catch (\Exception $e) {
+                            return response()->json(['message' => 'Erreur lors de l\'appel de l\'API: ' . $e->getMessage()], 500);
+                        }
                          $totalPoints += $answer->question->point;
                     }
 
@@ -120,8 +149,6 @@ class CandidateAnswerController extends Controller
                 return response()->json(['message' => 'Réponses d\'un étudiant enregistrée avec succès.', 'total_points' => $totalPoints]);
         }
 
-
-    
     public function destroy($id)
     {
         $candidateAnswer = CandidateAnswer::findOrFail($id);
@@ -130,5 +157,19 @@ class CandidateAnswerController extends Controller
         return response()->json(['message' => 'Réponse de candidat supprimée avec succès !']);
     }
 
+    private function roundPoint($point)
+    {
+        // Récupérer la partie décimale du point
+        $decimalPart = $point - floor($point);
 
+        // Si la partie décimale est inférieure à 0.5, arrondir vers le bas (pas de chiffre après la virgule)
+        if ($decimalPart < 0.5) {
+            $roundedPoint = floor($point);
+        } else {
+            // Sinon, arrondir vers le haut
+            $roundedPoint = ceil($point);
+        }
+
+        return $roundedPoint;
+    }
 }
