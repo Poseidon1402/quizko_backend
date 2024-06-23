@@ -28,6 +28,7 @@ class QuestionController extends Controller
         $request->validate([
             'question' => 'required|string|max:255',
             'point' => 'required|integer',
+            'type' => 'required|string',
             'answers' => 'required|array',
             'answers.*.answer' => 'required|string|max:255',
             'answers.*.is_correct' => 'required|boolean',
@@ -36,6 +37,7 @@ class QuestionController extends Controller
         $question = new Question();
         $question->question = $request->input('question');
         $question->point = $request->input('point');
+        $question->type = $request->input('type');
         $question->save();
 
         foreach ($request->input('answers') as $answerData) {
@@ -61,6 +63,7 @@ class QuestionController extends Controller
             $request->validate([
                 'question' => 'required|string|max:255',
                 'point' => 'required|integer',
+                'type' => 'required|string',
             ]);
 
             $question = Question::findOrFail($id);

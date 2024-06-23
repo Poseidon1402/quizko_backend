@@ -1,7 +1,7 @@
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
-import SecondaryButton from "@/Components/SecondaryButton";
+import Select from "@/Components/Select";
 import TextInput from "@/Components/TextInput";
 import React, { useState, useEffect } from "react";
 
@@ -88,6 +88,23 @@ export default function Form({
                             <InputError message={errors.point} className="mt-2" />
                         </div>
                     </fieldset>
+                    <fieldset className="gap-2">
+                        <div>
+                            <InputLabel htmlFor="questionType" value="Type de question" />
+
+                            <Select
+                                id="questionType"
+                                name="questionType"
+                                className="mt-1 block w-full"
+                                value={data.type}
+                                onChange={(e) => setData('type',e.target.value)}
+                                options={[
+                                    { value: "response", label: "Question avec réponse attendue" },
+                                    { value: "quiz", label: "Quiz" },
+                                ]}
+                            />
+                        </div>
+                  </fieldset>
                         <div className="space-y-2">
                       {mode==='creation' &&<>
                         <span className="text-md">Réponses:</span>
@@ -110,15 +127,15 @@ export default function Form({
                             </label>
                             </div>
                         ))}
-                        <div className="flex items-center space-x-2">
-                            {/* Specify type="button" to prevent automatic form submission */}
+                     {data.type === "quiz" && (
+                         <div className="flex items-center space-x-2">
                             <PrimaryButton
                             type="button"
                             onClick={handleAddAnswer}
                             >
                             +
                             </PrimaryButton>
-                        </div>
+                        </div>)}
                         </>}
                         </div>
                 
