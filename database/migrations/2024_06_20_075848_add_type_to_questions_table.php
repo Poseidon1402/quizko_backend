@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('questions', function (Blueprint $table) {
-            $table->enum('type', ['response', 'quiz'])->default('response');
+            $table->enum('type', ['qcm', 'open'])->default('qcm');
         });
     }
 

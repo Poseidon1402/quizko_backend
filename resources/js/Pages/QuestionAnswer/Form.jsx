@@ -99,8 +99,8 @@ export default function Form({
                                 value={data.type}
                                 onChange={(e) => setData('type',e.target.value)}
                                 options={[
-                                    { value: "response", label: "Question avec réponse attendue" },
-                                    { value: "quiz", label: "Quiz" },
+                                    { value: "open", label: "Question avec réponse attendue" },
+                                    { value: "qcm", label: "QCM" },
                                 ]}
                             />
                         </div>
@@ -116,6 +116,7 @@ export default function Form({
                                 onChange={handleAnswerChange(index)}
                                 className="block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-400 focus:ring focus:ring-blue-200"
                             />
+                            {data.type === "quiz" && (
                             <label className="flex items-center space-x-2">
                                 <input
                                 type="checkbox"
@@ -125,6 +126,7 @@ export default function Form({
                                 />
                                 <span className="text-lg">Correct</span>
                             </label>
+                            )}   
                             </div>
                         ))}
                      {data.type === "quiz" && (

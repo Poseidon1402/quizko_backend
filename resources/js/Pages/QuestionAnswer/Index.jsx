@@ -31,7 +31,7 @@ export default function Index({ auth, questions}) {
         question: "",  
         point: 0,  
         answers: [],  
-        type: "response",  
+        type: "open",  
     });
     const columns = useColumns({
         onEdit: (data) => {

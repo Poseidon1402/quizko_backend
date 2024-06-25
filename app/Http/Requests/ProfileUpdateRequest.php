@@ -19,6 +19,7 @@ class ProfileUpdateRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'registration_number' => ['string', 'max:255'],
             'gender' => ['string', 'max:255'],
+            'phone' => ['string', 'max:255'],
             'post_id' => 'exists:posts,id',
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($this->user()->id)],
         ];
