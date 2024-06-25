@@ -112,7 +112,7 @@ class CandidateAnswerController extends Controller
                     $question = $answer->question;
                     
                     // Vérifier si la réponse quiz du candidat est correcte 
-                    if ($answer->is_correct && $question->type === 'quiz') {
+                    if ($answer->is_correct && $question->type === 'qcm') {
                         // Si oui, attribuer le nombre de points de la question
                         $totalPoints += $answer->question->point;
                     } elseif ($question->type === 'response') {
