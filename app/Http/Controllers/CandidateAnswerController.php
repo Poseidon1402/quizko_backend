@@ -173,3 +173,4 @@ class CandidateAnswerController extends Controller
         return $roundedPoint;
     }
 }
+  

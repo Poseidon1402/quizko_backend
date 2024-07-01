@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\TokenController;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +31,12 @@ Route::post('/verify-reset-code', [PasswordResetController::class, 'verifyResetC
 Route::post('/new-password', [PasswordResetController::class, 'resetPassword']);//email, token , new_password
 
 Route::middleware('auth:sanctum')->group(function() {
+
+    Route::get('/user', function (Request $request) {
+        $user=$request->user();
+        $user->load('candidate.post');
+        return $user;
+    })->name('user.informations');
     
     Route::get('/student-answers/{candidate_id}/{interview_id}', [CandidateAnswerController::class, 'candidateInterviewAnswers'])->name('student_answers.studentTestAnswers');
     
