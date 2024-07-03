@@ -81,6 +81,7 @@ class AuthenticatedSessionController extends Controller
 
       $request->validate([
         'name' => 'required|string|max:255',
+        'phone' => 'required|string|max:50',
         'email' => 'required|string|lowercase|email|max:255',
         'password' => ['required'],
         'gender' => 'required'
@@ -89,6 +90,7 @@ class AuthenticatedSessionController extends Controller
       $user = User::create([
           'name' => $request->name,
           'email' => $request->email,
+          'phone' => $request->phone,
           'password' => Hash::make($request->password),
       ]);
 
