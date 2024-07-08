@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CandidateController;
 use App\Http\Controllers\CandidateAnswerController;
 use App\Http\Controllers\CandidateNoteController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\RecruiterController;
+use App\Http\Controllers\ResultController;
 use App\Http\Controllers\SubjectController;
 use App\Models\Candidate;
 use App\Models\CandidateAnswer;
@@ -43,6 +45,7 @@ Route::get('/', function () {
     return redirect(route('dashboard'));
 })->middleware(['auth', 'verified']);
 
+Route::get('/authenticated-users', [AuthenticatedSessionController::class, 'getAuthenticatedUsers']);
 
 Route::get('/dashboard', function () {
      $candidate_count = Candidate::count();
@@ -125,7 +128,7 @@ Route::middleware('auth')->prefix('tests')->group(function () {
 });
 
 Route::middleware('auth')->prefix('results')->group(function () {
-    Route::get('/', [InterviewController::class, 'index'])->can('viewAny', Interview::class)->name('results.index');
+    Route::get('/', [ResultController::class, 'index'])->can('viewAny', Interview::class)->name('results.index');
 });
 
 Route::middleware('auth')->prefix('students-answers')->group(function () {

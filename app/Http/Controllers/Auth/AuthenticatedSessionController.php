@@ -10,7 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Validation\Rules;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use App\Models\User;
 use App\Models\Candidate;
@@ -48,6 +48,15 @@ class AuthenticatedSessionController extends Controller
         if($request->authenticateApi()) {
             $user = $request->user();
             $user->tokens()->delete();
+            $userId =  $user->id;
+            $users = Cache::get('online-users', []);
+            $users[$userId] = [
+              'id' => $user->id,
+              'name' => $user->name,
+              'email' => $user->email,
+              'last_active' => now(), 
+          ];
+            Cache::put('online-users', $users, now()->addMinutes(60));
             $token = $user->createToken('api-token');
             $user->load('candidate.post');
 
@@ -130,9 +139,24 @@ class AuthenticatedSessionController extends Controller
     {
         $user= $request->user();
         $user->tokens()->delete();
-
+        $userId = $user->id;
+        $users = Cache::get('online-users', []);
+        unset($users[$userId]);
+        Cache::put('online-users', $users, now()->addMinutes(60)); 
         return response()->json([
             'message'=>"User loged out",
            ]);
+    }
+    /**
+     * Get list of authenticated users.
+     *
+     * @param  Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getAuthenticatedUsers(Request $request)
+    {
+        $users = collect(Cache::get('online-users', []))->values();
+
+        return response()->json(['users' => $users]);
     }
 }

@@ -8,14 +8,13 @@ use App\Models\Post;
 use App\Models\Subject;
 use Inertia\Inertia;
 use Carbon\Carbon;
-use Ramsey\Uuid\Uuid;
+use App\Events\InterviewStatusChanged;
 
 class InterviewController extends Controller
 {
      /**
      * Affiche la liste de tous les entretiens.
      *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
@@ -138,6 +137,17 @@ class InterviewController extends Controller
         $isExpired = $currentDateTime->gt($interview->end_date);
 
         return response()->json(['is_expired' => $isExpired]);
+    }
+
+    public function activateInterview($interview_id)
+    {
+        $interview = Interview::findOrFail($interview_id);
+        $interview->isActive = true; 
+        $interview->save();
+    
+        broadcast(new InterviewStatusChanged($interview->id, $interview->isActive));
+    
+        return response()->json(['message' => 'Interview activated successfully']);
     }
 
 }

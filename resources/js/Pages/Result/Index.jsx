@@ -1,8 +1,6 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import Datagrid from "@/Components/Datagrid";
-import Modal from "@/Components/Modal";
 import { PencilIcon, EyeIcon,TrashIcon } from "@heroicons/react/24/outline";
-import Form from "./Form";
 import { Transition } from "@headlessui/react";
 import { Head, Link, useForm } from "@inertiajs/react";
 import { useEffect, useMemo, useState } from "react";
@@ -10,9 +8,6 @@ import DeletionConfirmation from "@/Components/DeletionConfirmation";
 
 
 export default function Index({ auth, interviews, subjects,  posts}) {
-    const [showCreationModal, setShowCreationModal] = useState(false);
-    const [showDeletionModal, setShowDeletionModal] = useState(false);
-    const [showEditionModal, setShowEditionModal] = useState(false);
     const [selectedData, setSelectedData] = useState(null);
     const {
         data,
@@ -85,7 +80,7 @@ export default function Index({ auth, interviews, subjects,  posts}) {
             user={auth.user}
             header={
                 <h2 className="font-semibold text-xl text-gray-800 light:text-gray-200  leading-tight">
-                    Tests
+                     Résultats
                 </h2>
             }
         >
@@ -96,94 +91,10 @@ export default function Index({ auth, interviews, subjects,  posts}) {
                         <Datagrid
                             columns={columns}
                             rows={interviews}
-                            canCreate={true}
-                            onCreate={() => setShowCreationModal(true)}
                         />
                     </div>
             </div>
 
-            <Modal
-                show={showCreationModal}
-                title="Ajouter une test"
-                onClose={() => setShowCreationModal(false)}
-            >
-                <Transition
-                    show={hasErrors}
-                    enter="transition ease-in-out"
-                    enterFrom="opacity-0"
-                    leave="transition ease-in-out"
-                    leaveTo="opacity-0"
-                >
-                    <p className="text-sm text-center text-red-600 dark:text-red-400">
-                        Quelque chose s'est mal passé.
-                    </p>
-                </Transition>
-                <Form
-                    mode={showEditionModal ? "editon" : ("creation")}
-                    data={data}
-                    setData={setData}
-                    errors={errors}
-                    processing={processing}
-                    onSubmit={
-                        showEditionModal
-                            ? handleEditionSubmit
-                            : handleCreationSubmit
-                    }
-                    onCancel={() => {
-                        cancel();
-                        setShowCreationModal(false);
-                    }}
-                    onReset={() => reset("name")}
-                />
-            </Modal>
-
-            <Modal
-                show={showEditionModal}
-                title="Modifier une test"
-                onClose={() => setShowEditionModal(false)}
-            >
-                <Transition
-                    show={hasErrors}
-                    enter="transition ease-in-out"
-                    enterFrom="opacity-0"
-                    leave="transition ease-in-out"
-                    leaveTo="opacity-0"
-                >
-                    <p className="text-sm text-center text-red-600 dark:text-red-400">
-                        Quelque chose s'est mal passé.
-                    </p>
-                </Transition>
-                <Form
-                    mode="edition"
-                    data={data}
-                    setData={setData}
-                    errors={errors}
-                    processing={processing}
-                    onSubmit={handleEditionSubmit}
-                    onCancel={() => {
-                        cancel();
-                        setShowEditionModal(false);
-                    }}
-                    onReset={() => reset()}
-                />
-            </Modal>
-
-            <Modal
-                show={showDeletionModal}
-                title="Supprimer une test "
-                onClose={() => setShowDeletionModal(false)}
-            >
-                 <DeletionConfirmation
-                    name={
-                        selectedData?.name
-                    }
-                    onCancel={() => {
-                        cancel();
-                        setShowDeletionModal(false);
-                    }}
-                    handleDeleteSubmit={handleDeletionSubmit}
-                /> 
-            </Modal>
         </AuthenticatedLayout>
     );
 }
@@ -241,36 +152,12 @@ const useColumns = (
                     <Link
                          href={`/students-answers/${(info.getValue()).id}`}
                          className={
-                            "p-1 border border-transparent rounded-md"
-                        }           
+                            "inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150" 
+                            }           
                     >
-                        <EyeIcon className="w-5 h-5 text-gray-600" />
+                        Voir 
                      
                     </Link>
-                
-                        <button
-                             className={
-                                "p-1 border border-transparent rounded-md"
-                            }
-                            onClick={() =>{ 
-                                 props.onEdit(info.getValue() );
-                             }}
-                        >
-                            <PencilIcon className="w-5 h-5 text-green-600"  /> 
-                        
-                        </button>
-                        <button
-                            className={
-                                "p-1 border border-transparent rounded-md"
-                            }
-                            onClick={() =>{
-                                props.onDelete(info.getValue());
-                            }}
-                        >
-                            <TrashIcon className="w-5 h-5 text-red-600"  />
-                          
-                        </button>
-
                 </div>
                 
                 ),
