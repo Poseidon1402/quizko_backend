@@ -30,7 +30,7 @@ export default function Form({
         <form className="p-5" onSubmit={onSubmit}>
          <fieldset className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 <div className="mt-4">
-                    <InputLabel htmlFor="name" value="Nom d'utilisateur" />
+                    <InputLabel htmlFor="name" value="Nom" />
                     <TextInput
                         data-testid="name-input"
                         id="name"
@@ -63,7 +63,7 @@ export default function Form({
                 </div>
             </fieldset>
 
-            <fieldset className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            {/* <fieldset className="grid grid-cols-1 md:grid-cols-2 gap-2">
 
                 <div className="mt-4 md:mt-0">
                     <InputLabel htmlFor="last_name" value="Nom" />
@@ -98,7 +98,7 @@ export default function Form({
 
                     <InputError message={errors.first_name} className="mt-2" />
                 </div>
-            </fieldset>
+            </fieldset> */}
 
             <fieldset className="grid grid-cols-1 md:grid-cols-2 gap-2">
                     <div className="mt-4">

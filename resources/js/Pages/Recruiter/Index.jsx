@@ -33,8 +33,8 @@ export default function Index({ auth, recruiters, departments}) {
         recentlySuccessful,
     } = useForm({
         name: "", 
-        first_name: "",
-        last_name: "",
+        // first_name: "",
+        // last_name: "",
         email: "",
         phone: "",
         address: "",
@@ -52,6 +52,7 @@ export default function Index({ auth, recruiters, departments}) {
         },
         onDelete: (data) => {
             setSelectedData(data);
+            setData(data);
             setShowDeletionModal(true);
         },
     });
@@ -104,12 +105,14 @@ export default function Index({ auth, recruiters, departments}) {
                    <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                         <Datagrid
                             columns={columns}
+                            canCreate={true}
+                            onCreate={() => setShowCreationModal(true)}
                             rows={recruiters}
                         />
                     </div>
                     <Modal
                         show={showCreationModal||showEditionModal}
-                        title={showCreationModal?"Modifier un enseignant":"Ajouter un enseignant"}
+                        title={showCreationModal?"Ajouter un enseignant":"Modifier un enseignant"}
                         onClose={() =>{
                             setShowCreationModal(false);
                             setShowEditionModal(false);
@@ -146,7 +149,7 @@ export default function Index({ auth, recruiters, departments}) {
                     </Modal>
                     <Modal
                         show={showDeletionModal}
-                        title="Supprimer un département "
+                        title="Supprimer un enseignant "
                         onClose={() => setShowDeletionModal(false)}
                     >
                         <DeletionConfirmation

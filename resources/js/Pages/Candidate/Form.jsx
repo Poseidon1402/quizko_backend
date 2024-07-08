@@ -30,20 +30,20 @@ export default function Form({
         <form className="p-5" onSubmit={onSubmit}>
          <fieldset className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 <div className="mt-4">
-                    <InputLabel htmlFor="name" value="Nom d'utilisateur" />
+                    <InputLabel htmlFor="registration_number" value="Numero d'inscription" />
                     <TextInput
-                        data-testid="name-input"
-                        id="name"
-                        name="name"
-                        value={data.name}
+                        data-testid="registration_number-input"
+                        id="registration_number"
+                        name="registration_number"
+                        value={data.registration_number}
                         className="mt-1 block w-full"
-                        autoComplete="name"
-                        onChange={(e) => setData("name", e.target.value)}
+                        autoComplete="registration_number"
+                        onChange={(e) => setData("registration_number", e.target.value)}
                         isFocused={true}
                         required
                     />
 
-                    <InputError message={errors.name} className="mt-2" />
+                    <InputError message={errors.registration_number} className="mt-2" />
                 </div>
                 <div className="mt-4">
                 <InputLabel htmlFor="email" value="Email" />
@@ -63,26 +63,26 @@ export default function Form({
                 </div>
             </fieldset>
 
-            <fieldset className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <fieldset className="">
 
                 <div className="mt-4 md:mt-0">
-                    <InputLabel htmlFor="last_name" value="Nom" />
+                    <InputLabel htmlFor="name" value="Nom" />
 
                     <TextInput
-                        data-testid="last_name-input"
-                        id="last_name"
-                        name="last_name"
-                        value={data.last_name}
+                        data-testid="name-input"
+                        id="name"
+                        name="name"
+                        value={data.name}
                         className="mt-1 block w-full"
-                        autoComplete="last_name"
-                        onChange={(e) => setData("last_name", e.target.value)}
+                        autoComplete="name"
+                        onChange={(e) => setData("name", e.target.value)}
                         required
                     />
 
-                    <InputError message={errors.last_name} className="mt-2" />
+                    <InputError message={errors.name} className="mt-2" />
                 </div>
 
-                <div className="mt-4 md:mt-0">
+                {/* <div className="mt-4 md:mt-0">
                     <InputLabel htmlFor="first_name" value="Prénom" />
 
                     <TextInput
@@ -97,7 +97,7 @@ export default function Form({
                     />
 
                     <InputError message={errors.first_name} className="mt-2" />
-                </div>
+                </div> */}
             </fieldset>
 
             <fieldset className="grid grid-cols-1 md:grid-cols-2 gap-2">

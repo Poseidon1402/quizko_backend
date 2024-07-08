@@ -117,13 +117,30 @@ export default function Sidebar({ user }) {
                                                                  "tests.index",
                                                              )}
                                                              active={route().current(
-                                                             "tests.index"|| "student_answers.index",
+                                                             "tests.index",
                                                              )}
                                                             className="flex p-2 text-base group"
                                                         >
                                                             <BookmarkIcon className="w-6 h-6 text-gray-500 transition duration-75  group-hover:text-gray-900" />
                                                             <span className="ml-3">
-                                                               Tests & Résultat
+                                                               Tests
+                                                            </span>
+                                                        </NavLink>
+                                                    </li>
+                                                    <li>
+                                                        <NavLink
+                                                            data-testid="test-link"
+                                                            href={route(
+                                                                 "results.index",
+                                                             )}
+                                                             active={route().current(
+                                                             "results.index"|| "student_answers.index",
+                                                             )}
+                                                            className="flex p-2 text-base group"
+                                                        >
+                                                            <BookmarkIcon className="w-6 h-6 text-gray-500 transition duration-75  group-hover:text-gray-900" />
+                                                            <span className="ml-3">
+                                                               Résultat
                                                             </span>
                                                         </NavLink>
                                                     </li>

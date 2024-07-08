@@ -124,6 +124,10 @@ Route::middleware('auth')->prefix('tests')->group(function () {
     Route::delete('/{id}', [InterviewController::class, 'destroy'])->can('create', Interview::class)->name('tests.destroy');
 });
 
+Route::middleware('auth')->prefix('results')->group(function () {
+    Route::get('/', [InterviewController::class, 'index'])->can('viewAny', Interview::class)->name('results.index');
+});
+
 Route::middleware('auth')->prefix('students-answers')->group(function () {
     Route::get('/{id}', [CandidateAnswerController::class, 'index'])->can('viewAny', CandidateAnswer::class)->name('student_answers.index');
     Route::get('/{candidate_id}', [CandidateAnswerController::class, 'candidateInterviewAnswers'])->name('student_answers.studentTestAnswers');//student

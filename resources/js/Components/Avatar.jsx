@@ -1,3 +1,4 @@
+import { UserIcon } from "@heroicons/react/20/solid";
 import { useEffect, useState } from "react";
 
 export default function Avatar({
@@ -36,28 +37,11 @@ export default function Avatar({
             )}
             {error && (
                 <div
-                    className={`inline-block ${sizeClass} rounded-full ring-1 ring-gray-800 flex items-center justify-center font-bold ${className}`}
-                    style={{ backgroundColor: stringToColor(alt) }}
-                >{`${alt.slice(0, 2)}`}</div>
+                    className={`inline-block ${sizeClass} rounded-full ring-1 ring-gray-800 flex items-center justify-center ${className}`}
+                >
+                    <UserIcon className={`${sizeClass} text-gray-500`} />
+                </div>
             )}
         </>
     );
-}
-
-function stringToColor(string) {
-    let hash = 0;
-    let i;
-
-    for (i = 0; i < string.length; i += 1) {
-        hash = string.charCodeAt(i) + ((hash << 5) - hash);
-    }
-
-    let color = "#";
-
-    for (i = 0; i < 3; i += 1) {
-        const value = (hash >> (i * 8)) & 0xff;
-        color += `00${value.toString(16)}`.slice(-2);
-    }
-
-    return color;
 }

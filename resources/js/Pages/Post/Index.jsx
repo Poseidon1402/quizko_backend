@@ -92,6 +92,7 @@ export default function Index({ auth, posts}) {
                         <Datagrid
                             columns={columns}
                             rows={posts}
+                            canCreate={true}
                             onCreate={() => setShowCreationModal(true)}
                         />
                     </div>

@@ -1,11 +1,7 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import Datagrid from "@/Components/Datagrid";
 import Modal from "@/Components/Modal";
-import { EnvelopeIcon,
-    EyeIcon,
-    PencilIcon,
-    PhoneIcon,
-    TrashIcon, } from "@heroicons/react/24/outline";
+import { EnvelopeIcon, EyeIcon, PencilIcon, PhoneIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Form from "../Candidate/Form";
 import { Head, Link, useForm } from "@inertiajs/react";
 import { useEffect, useMemo, useState } from "react";
@@ -13,25 +9,13 @@ import Avatar from "@/Components/Avatar";
 import ImportExcel from "../Candidate/ImportExcel";
 import { Transition } from "@headlessui/react";
 
-export default function Index({ auth, post}) {
-
+export default function Index({ auth, post }) {
     const [showCreationModal, setShowCreationModal] = useState(false);
     const [showDeletionModal, setShowDeletionModal] = useState(false);
     const [showEditionModal, setShowEditionModal] = useState(false);
     const [selectedData, setSelectedData] = useState(null);
-    const {
-        data,
-        setData,
-        post: create,
-        put,
-        delete: destroy,
-        processing,
-        errors,
-        reset,
-        cancel,
-        hasErrors,
-        recentlySuccessful,
-    } = useForm({
+    const [searchTerm, setSearchTerm] = useState("");
+    const { data, setData, post: create, put, delete: destroy, processing, errors, reset, cancel, hasErrors, recentlySuccessful } = useForm({
         name: "", 
         first_name: "",
         last_name: "",
@@ -44,6 +28,14 @@ export default function Index({ auth, post}) {
         password: "", 
         password_confirmation: "",
     });
+
+    const filteredCandidates = useMemo(() => {
+        return post.candidates.filter(candidate => 
+            candidate.registration_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            candidate.user.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+    }, [post.candidates, searchTerm]);
+
     const columns = useColumns({
         onEdit: (data) => {
             setSelectedData(data);
@@ -55,6 +47,7 @@ export default function Index({ auth, post}) {
             setShowDeletionModal(true);
         },
     });
+
     useEffect(() => {
         if (hasErrors) {
             reset("name");
@@ -78,96 +71,105 @@ export default function Index({ auth, post}) {
         create(route("students.store"));
     };
 
-    const handleEditionSubmit = (e) => {a
+    const handleEditionSubmit = (e) => {
         e.preventDefault();
         put(route("students.update", selectedData.id));
     };
+
     const handleDeletionSubmit = (e) => {
         e.preventDefault();
         destroy(route("students.destroy", selectedData));
         setSelectedData(null);
         setShowDeletionModal(false);
     };
+
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={<>
-                <h2 className="font-semibold text-xl text-gray-800 light:text-gray-200  leading-tight">
-                     Etudiants en {post.name}
-                </h2>
+            header={
+                <>
+                    <h2 className="font-semibold text-xl text-gray-800 light:text-gray-200 leading-tight">
+                        Etudiants en {post.name}
+                    </h2>
                 </>
             }
         >
             <Head title="Etudiant" />
             <Link
-                    className="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150"
-                    href="/levels"
-                >Retour</Link>
+                className="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150"
+                href="/levels"
+            >
+                Retour
+            </Link>
             <div className="py-12">
-
-                   <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                        <Datagrid
-                            columns={columns}
-                            rows={post.candidates}
-                            canCreate={false}
+                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                    <div className="mb-4">
+                        <input
+                            type="text"
+                            placeholder="Rechercher par nom ou matricule"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:border-blue-400 focus:ring focus:ring-blue-200 text-sm"
                         />
                     </div>
-                    <Modal
-                        show={showCreationModal}
-                        title={"Ajouter un étudiant en "+post.name}
-                        onClose={() => setShowCreationModal(false)}
+                    <Datagrid
+                        columns={columns}
+                        rows={filteredCandidates}
+                        canCreate={false}
+                    />
+                </div>
+                <Modal
+                    show={showCreationModal}
+                    title={"Ajouter un étudiant en " + post.name}
+                    onClose={() => setShowCreationModal(false)}
+                >
+                    <Transition
+                        show={hasErrors}
+                        enter="transition ease-in-out"
+                        enterFrom="opacity-0"
+                        leave="transition ease-in-out"
+                        leaveTo="opacity-0"
                     >
-                        <Transition
-                            show={hasErrors}
-                            enter="transition ease-in-out"
-                            enterFrom="opacity-0"
-                            leave="transition ease-in-out"
-                            leaveTo="opacity-0"
-                        >
-                            <p className="text-sm text-center text-red-600 dark:text-red-400">
-                                Quelque chose s'est mal passé.
-                            </p>
-                        </Transition>
-                        <Form
-                            mode={showEditionModal ? "edition" : ("creation")}
-                            data={data}
-                            setData={setData}
-                            errors={errors}
-                            processing={processing}
-                            onSubmit={
-                                showEditionModal
-                                    ? handleEditionSubmit
-                                    : handleCreationSubmit
-                            }
-                            onCancel={() => {
-                                cancel();
-                                setShowCreationModal(false);
-                            }}
-                        />
-            </Modal>
+                        <p className="text-sm text-center text-red-600 dark:text-red-400">
+                            Quelque chose s'est mal passé.
+                        </p>
+                    </Transition>
+                    <Form
+                        mode={showEditionModal ? "edition" : "creation"}
+                        data={data}
+                        setData={setData}
+                        errors={errors}
+                        processing={processing}
+                        onSubmit={showEditionModal ? handleEditionSubmit : handleCreationSubmit}
+                        onCancel={() => {
+                            cancel();
+                            setShowCreationModal(false);
+                        }}
+                    />
+                </Modal>
             </div>
         </AuthenticatedLayout>
     );
 }
 
-const useColumns = (
-    props,
-)=> {
+const useColumns = (props) => {
     return useMemo(() => {
         return [
+            {
+                accessorKey: "registration_number",
+                cell: (info) => `${info.getValue()}`,
+                header: () => "Matricule",
+            },
             {
                 accessorFn: (row) => row.user,
                 id: "last_name",
                 cell: (info) => {
-                    const { email, phone, name } =
-                        info.getValue();
+                    const { email, phone, name } = info.getValue();
                     return (
                         <div className="flex items-center gap-2">
                             <Avatar size="lg" src="" alt={name} />
                             <div className="space-y-2">
-                                <h2 className="text-[16px] font-semibold">
-                                    {name}
-                                </h2>
+                                <h2 className="text-[16px] font-semibold">{name}</h2>
                                 <div className="flex items-center gap-4">
                                     <span className="flex items-center gap-1 text-xs font-thin italic">
                                         <EnvelopeIcon className="w-3 h-3" />
@@ -188,11 +190,9 @@ const useColumns = (
             },
             {
                 accessorKey: "gender",
-                cell: (info) =>
-                    `${(info.getValue())}`,
+                cell: (info) => info.getValue() === 'masculine' ? 'Masculin' : 'Féminin',
                 header: () => "Genre",
             },
-    
         ];
     }, [props]);
 };

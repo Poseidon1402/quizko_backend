@@ -7,6 +7,7 @@ import { Transition } from "@headlessui/react";
 import { Head, Link, useForm } from "@inertiajs/react";
 import { useEffect, useMemo, useState } from "react";
 import DeletionConfirmation from "@/Components/DeletionConfirmation";
+import ActionButtons from "@/Components/ActionButtons";
 
 
 export default function Index({ auth, departments}) {
@@ -91,6 +92,7 @@ export default function Index({ auth, departments}) {
                         <Datagrid
                             columns={columns}
                             rows={departments}
+                            canCreate={true}
                             onCreate={() => setShowCreationModal(true)}
                         />
                     </div>
@@ -203,31 +205,7 @@ const useColumns = (
                 accessorFn: (row) => row,
                 id: "id",
                 cell: (info) => (
-                    <div className="flex space-x-2">
-                        <button
-                            className={
-                                "p-1 border border-transparent rounded-md"
-                            }
-                            onClick={() =>{ 
-                                 props.onEdit(info.getValue());
-                             }}
-                        >
-                           <PencilIcon className="w-5 h-5 text-green-600" /> 
-                        
-                        </button>
-                        <button
-                           className={
-                            "p-1 border border-transparent rounded-md"
-                        }
-                            onClick={() =>{
-                                props.onDelete(info.getValue());
-                            }}
-                        >
-                            <TrashIcon className="w-5 h-5 text-red-600" />
-                        </button>
-
-                </div>
-                
+                    <ActionButtons onEdit={props.onEdit} onDelete={props.onEdit} info={info}/>
                 ),
                 header: () => "Action",
             },

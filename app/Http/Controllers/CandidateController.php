@@ -50,7 +50,8 @@ class CandidateController extends Controller
         $candidate = new Candidate();
         $candidate->user_id = $user->id;
         $candidate->post_id = $request->input('post_id');
-        $candidate->gender = $request->input('gender');
+        $candidate->gender = $request->input('gender');  
+        $candidate->registration_number = $request->input('registration_number'); 
         $candidate->save();
         redirect(route('students.index')); 
     }

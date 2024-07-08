@@ -99,7 +99,7 @@ export default function Index({ auth, subjects, questions}) {
                         <Datagrid
                             columns={columns}
                             rows={subjects}
-    
+                            canCreate={true}
                             onCreate={() => setShowCreationModal(true)}
                         />
                     </div>
