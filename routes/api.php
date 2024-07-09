@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CandidateAnswerController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -30,6 +31,8 @@ Route::post('/verify-reset-code', [PasswordResetController::class, 'verifyResetC
         
 Route::post('/new-password', [PasswordResetController::class, 'resetPassword']);//email, token , new_password
 
+Route::get('/levels', [PostController::class, 'index'])->name('levels.index');
+
 Route::middleware('auth:sanctum')->group(function() {
 
     Route::get('/user', function (Request $request) {
@@ -57,4 +60,5 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::put('/password', [PasswordController::class, 'update'])->name('password.update'); //  current_password: "oldpassword123", password: "newpassword123", password_confirmation: "newpassword123"
 
     Route::get('/check-token', [TokenController::class, 'checkToken'])->name('check-token');
+    
 });

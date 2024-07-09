@@ -7,6 +7,7 @@ import { Transition } from "@headlessui/react";
 import { Head, Link, useForm } from "@inertiajs/react";
 import { useEffect, useMemo, useState } from "react";
 import DeletionConfirmation from "@/Components/DeletionConfirmation";
+import Breadcrumb from "@/Components/Breadcrumbs/Breadcrumb";
 
 
 export default function Index({ auth, posts}) {
@@ -79,14 +80,9 @@ export default function Index({ auth, posts}) {
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={
-                <h2 className="font-semibold text-xl text-gray-800 light:text-gray-200  leading-tight">
-                    Classes
-                </h2>
-            }
         >
-            <Head title="Classe" />
-
+            <Head title="Classes" />
+            <Breadcrumb pageName="Classes" />
             <div className="py-12">
                    <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                         <Datagrid
@@ -193,7 +189,7 @@ const useColumns = (
             {
                 accessorKey: "name",
                 cell: (info) =>
-                    `${(info.getValue())}`,
+                (<span className="bg-blue-600 p-2 rounded-md text-white">{info.getValue()}</span>),  
                 header: () => "Classe",
             },
             {

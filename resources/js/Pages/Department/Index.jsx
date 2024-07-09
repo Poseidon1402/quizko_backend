@@ -8,6 +8,7 @@ import { Head, Link, useForm } from "@inertiajs/react";
 import { useEffect, useMemo, useState } from "react";
 import DeletionConfirmation from "@/Components/DeletionConfirmation";
 import ActionButtons from "@/Components/ActionButtons";
+import Breadcrumb from "@/Components/Breadcrumbs/Breadcrumb";
 
 
 export default function Index({ auth, departments}) {
@@ -79,14 +80,9 @@ export default function Index({ auth, departments}) {
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={
-                <h2 className="font-semibold text-xl text-gray-800 light:text-gray-200  leading-tight">
-                     Départements
-                </h2>
-            }
         >
             <Head title="Département" />
-
+            <Breadcrumb pageName="Départements" />
             <div className="py-12">
                    <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                         <Datagrid

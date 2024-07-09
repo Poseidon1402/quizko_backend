@@ -31,6 +31,14 @@ class SubjectController extends Controller
         ]);
     }
 
+    public function create()
+    {
+        $questions = Question::all();
+        return Inertia::render('Subject/Create', [
+            'questions' => $questions,
+        ]);
+    }
+
     //Questions d'un sujet d'un Interview
     public function getQuestionsSubject($id)
     {
@@ -61,12 +69,12 @@ class SubjectController extends Controller
         $subject->save();
 
        
-    $questionsData = $request->input('questions'); // Tableau de questions
-    foreach ($questionsData as $question) {
-        $subject->questions()->attach($question);
-    }
-        redirect(route('subjects.index'));
-    }
+        $questionsData = $request->input('questions'); 
+        foreach ($questionsData as $question) {
+            $subject->questions()->attach($question);
+        }
+            redirect(route('subjects.index'));
+        }
 
     public function destroy($id)
         {

@@ -6,10 +6,10 @@ import Form from "./Form";
 import { Head, useForm } from "@inertiajs/react";
 import { useEffect, useMemo, useState } from "react";
 import Avatar from "@/Components/Avatar";
-import ImportExcel from "./ImportExcel";
 import { Transition } from "@headlessui/react";
 import DeletionConfirmation from "@/Components/DeletionConfirmation";
-import PrimaryButton from "@/Components/PrimaryButton";
+import Breadcrumb from "@/Components/Breadcrumbs/Breadcrumb";
+import SuccessButton from "@/Components/SuccessButton";
 
 export default function Index({ auth, candidates, posts }) {
     const [showCreationModal, setShowCreationModal] = useState(false);
@@ -46,7 +46,7 @@ export default function Index({ auth, candidates, posts }) {
 
     const filteredCandidates = candidates.filter(candidate => {
         return (
-            candidate.user.name.toLowerCase().includes(filterName.toLowerCase()) &&
+            (candidate.user.name.toLowerCase().includes(filterName.toLowerCase()) || candidate.registration_number.toLowerCase().includes(filterName.toLowerCase())) &&
             (!filterClass || candidate.post.name === filterClass)
         );
     });
@@ -96,14 +96,9 @@ export default function Index({ auth, candidates, posts }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={
-                <h2 className="font-semibold text-xl text-gray-800 light:text-gray-200 leading-tight">
-                    Étudiants
-                </h2>
-            }
         >
             <Head title="Étudiant" />
-
+            <Breadcrumb pageName="Étudiant" />
             <div className="py-12">
                 {/* <ImportExcel /> */}
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -112,7 +107,7 @@ export default function Index({ auth, candidates, posts }) {
                          <label className="font-semibold">Filtrer par :</label>
                                 <input
                                     type="text"
-                                    placeholder="Filtrer par nom"
+                                    placeholder="Filtrer par nom ou matricule"
                                     value={filterName}
                                     onChange={(e) => setFilterName(e.target.value)}
                                     className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -130,9 +125,9 @@ export default function Index({ auth, candidates, posts }) {
                                     ))}
                                 </select>
                         </div>
-                        <PrimaryButton onClick={() => setShowCreationModal(true)}>
+                        <SuccessButton onClick={() => setShowCreationModal(true)}>
                             Ajouter un étudiant
-                        </PrimaryButton>
+                        </SuccessButton>
                     </div>
                     <Datagrid
                         columns={columns}
@@ -199,6 +194,12 @@ const useColumns = (props) => {
     return useMemo(() => {
         return [
             {
+                accessorKey: "registration_number",
+                cell: (info) =>
+                (<span className="bg-blue-600 p-2 rounded-md text-white">{info.getValue()}</span>),  
+                header: () => "Matricule",
+            },
+            {
                 accessorFn: (row) => row.user,
                 id: "last_name",
                 cell: (info) => {
@@ -230,7 +231,13 @@ const useColumns = (props) => {
             },
             {
                 accessorKey: "gender",
-                cell: (info) => `${info.getValue()}`,
+                cell: (info) => (
+                    <span className={`px-2 py-1 rounded-md ${
+                        info.getValue() === 'masculine' ? 'bg-blue-100 text-blue-800' : 'bg-pink-100 text-pink-800'
+                    }`}>
+                       {info.getValue() === 'masculine' ? 'Masculin' : 'Féminin'}
+                    </span>
+                ),
                 header: () => "Genre",
             },
             {

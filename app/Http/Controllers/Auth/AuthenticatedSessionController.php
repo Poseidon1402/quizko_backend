@@ -93,7 +93,8 @@ class AuthenticatedSessionController extends Controller
         'phone' => 'required|string|max:50',
         'email' => 'required|string|lowercase|email|max:255',
         'password' => ['required'],
-        'gender' => 'required'
+        'gender' => 'required',
+        'post_id' => 'required'
       ]);
 
       $user = User::create([
@@ -106,7 +107,7 @@ class AuthenticatedSessionController extends Controller
       $candidate = new Candidate();
       $candidate->registration_number = $request->input('registration_number');
       $candidate->user_id = $user->id;
-      $candidate->post_id = 1;
+      $candidate->post_id = $request->input('post_id');
       $candidate->gender = $request->input('gender');
       $candidate->save();
 

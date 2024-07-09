@@ -5,6 +5,7 @@ import { Transition } from "@headlessui/react";
 import { Head, Link, useForm } from "@inertiajs/react";
 import { useEffect, useMemo, useState } from "react";
 import DeletionConfirmation from "@/Components/DeletionConfirmation";
+import Breadcrumb from "@/Components/Breadcrumbs/Breadcrumb";
 
 
 export default function Index({ auth, interviews, subjects,  posts}) {
@@ -78,14 +79,9 @@ export default function Index({ auth, interviews, subjects,  posts}) {
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={
-                <h2 className="font-semibold text-xl text-gray-800 light:text-gray-200  leading-tight">
-                     Résultats
-                </h2>
-            }
         >
-            <Head title="Tests" />
-
+            <Head title="Résultats" />
+            <Breadcrumb pageName="Résultats" />
             <div className="py-12">
                    <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                         <Datagrid
@@ -106,8 +102,7 @@ const useColumns = (
         return [
             {
                 accessorKey: "name",
-                cell: (info) =>
-                    `${(info.getValue())}`,
+                cell: (info) =>(<span className="text-yellow-300">{info.getValue()}</span>),
                 header: () => "Nom du test",
             },
             {
@@ -124,7 +119,7 @@ const useColumns = (
             },
             {
                 accessorKey: "time",
-                cell: (info) =>(<span>{info.getValue()}</span>),
+                cell: (info) =>(<span className="bg-green-400 p-1 rounded-md text-white">{info.getValue()}</span>),
                 header: () => "Durée",
             },
             {
@@ -139,11 +134,19 @@ const useColumns = (
                     `${(info.getValue())}`,
                 header: () => "Sujet",
             },
-             {
+            {
                 accessorKey: "is_expired",
-                cell: (info) =>(<span>{info.getValue()?"Expiré":"Non expiré"}</span>),
+                cell: (info) => (
+                    <span
+                        className={`px-2 py-1 inline-flex text-xs font-semibold rounded-md ${
+                            info.getValue() ? "text-red-800" : "text-green-400"
+                        }`}
+                    >
+                        {info.getValue() ? "Expiré" : "Non expiré"}
+                    </span>
+                ),
                 header: () => "Status",
-            },
+            },            
            {
                 accessorFn: (row) => row,
                 id: "id",
@@ -152,7 +155,7 @@ const useColumns = (
                     <Link
                          href={`/students-answers/${(info.getValue()).id}`}
                          className={
-                            "inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150" 
+                            "inline-flex items-center justify-center rounded-md bg-meta-3 py-2 px-5 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10 " 
                             }           
                     >
                         Voir 

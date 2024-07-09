@@ -9,6 +9,8 @@ import { useEffect, useMemo, useState } from "react";
 import SecondaryButton from "@/Components/SecondaryButton";
 import DeletionConfirmation from "@/Components/DeletionConfirmation";
 import PrimaryButton from "@/Components/PrimaryButton";
+import Breadcrumb from "@/Components/Breadcrumbs/Breadcrumb";
+import SuccessButton from "@/Components/SuccessButton";
 
 export default function Index({ auth, questions }) {
     const [showCreationModal, setShowCreationModal] = useState(false);
@@ -92,14 +94,9 @@ export default function Index({ auth, questions }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={
-                <h2 className="font-semibold text-xl text-gray-800 light:text-gray-200  leading-tight">
-                    Questions && Réponses
-                </h2>
-            }
         >
             <Head title="Questions & Réponses" />
-
+            <Breadcrumb pageName="Questions & Réponses" />
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="mb-4 flex justify-between items-center space-x-4">
@@ -122,9 +119,9 @@ export default function Index({ auth, questions }) {
                                 <option value="qcm">QCM</option>
                             </select>
                         </div>
-                        <PrimaryButton onClick={() => setShowCreationModal(true)}>
+                        <SuccessButton onClick={() => setShowCreationModal(true)}>
                             Ajouter une question
-                        </PrimaryButton>
+                        </SuccessButton>
                     </div>
                     <Datagrid
                         columns={columns}
@@ -205,7 +202,7 @@ export default function Index({ auth, questions }) {
                 title="Réponse(s) d'une question"
                 onClose={() => setShowAnswersModal(false)}
             >
-                <div className="p-4 m-5">
+                <div className="p-4 m-5 text-white">
                     <h1 className="text-xl font-semibold mb-2">{selectedData?.question}:</h1>
                     <h2 className="text-lg mb-4">Points : {selectedData?.point}</h2>
                     <ul>
@@ -226,7 +223,7 @@ export default function Index({ auth, questions }) {
                 </div>
                 <div className="flex items-center border-t p-2 dark:border-gray-600 justify-center m-4">
                     <SecondaryButton className="mx-4" onClick={() => setShowAnswersModal(false)}>
-                        Annuler
+                        Ok
                     </SecondaryButton>
                 </div>
             </Modal>
@@ -239,7 +236,7 @@ const useColumns = (props) => {
         return [
             {
                 accessorKey: "question",
-                cell: (info) => `${info.getValue()}`,
+                cell: (info) =>(<span className="text-yellow-200">{info.getValue()}</span>),
                 header: () => "Question",
             },
             {
@@ -249,7 +246,7 @@ const useColumns = (props) => {
             },
             {
                 accessorKey: "point",
-                cell: (info) => `${info.getValue()}`,
+                cell: (info) =>(<span className="bg-red-800 text-white rounded-lg p-2">{info.getValue()}</span>),
                 header: () => "Point",
             },
             {

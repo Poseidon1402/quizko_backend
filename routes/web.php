@@ -110,6 +110,7 @@ Route::middleware('auth')->prefix('questions')->group(function () {
 });
 
 Route::middleware('auth')->prefix('subjects')->group(function () {
+    Route::get('/create', [SubjectController::class, 'create'])->can('viewAny', Question::class)->name('subjects.create');
     Route::get('/{id}', [SubjectController::class, 'getQuestionsSubject'])->can('viewAny', Question::class)->name('subjects.getQuestionsSubject');//student
     Route::get('/', [SubjectController::class, 'index'])->can('viewAny', Question::class)->name('subjects.index');
     Route::post('/', [SubjectController::class, 'store'])->can('create', Question::class)->name('subjects.store');

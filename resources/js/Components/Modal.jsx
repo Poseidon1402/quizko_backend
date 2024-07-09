@@ -55,11 +55,11 @@ export default function Modal({
                     leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                 >
                     <Dialog.Panel
-                        className={`mb-6 p-5 bg-white light:bg-gray-800  rounded-lg overflow-hidden shadow-xl transform transition-all sm:w-full sm:mx-auto ${maxWidthClass}`}
+                        className={`mb-6 p-5 bg-black  rounded-lg overflow-hidden shadow-xl transform transition-all sm:w-full sm:mx-auto ${maxWidthClass}`}
                     >
                         {title && (
                             <div className="flex justify-between items-center px-5 py-4 rounded-t border-b light:border-gray-600">
-                                <h3 className="text-xl font-bold text-gray-900 light:text-white ">
+                                <h3 className="text-xl font-bold text-white ">
                                     {title}
                                 </h3>
                                 {closeable && (

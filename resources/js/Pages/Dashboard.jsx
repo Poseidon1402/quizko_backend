@@ -8,6 +8,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Breadcrumb from "@/Components/Breadcrumbs/Breadcrumb";
 
 export default function Dashboard({ auth, count }) {
     const [authenticatedUsers, setAuthenticatedUsers] = useState([]);
@@ -24,67 +25,69 @@ export default function Dashboard({ auth, count }) {
             console.error("Error fetching authenticated users:", error);
         }
     };
+
     return (
-        <AuthenticatedLayout
-            user={auth.user}
-            header={
-                <h2 className="font-semibold text-xl text-gray-800 light:text-gray-200  leading-tight">
-                    Dashboard
-                </h2>
-            }
-        >
+        <AuthenticatedLayout user={auth.user}>
             <Head title="Dashboard" />
+            <Breadcrumb pageName="Dashboard" />
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="p-5 bg-white text-gray-900 light:bg-gray-800  light:text-gray-100  overflow-hidden shadow-sm sm:rounded-lg">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                            {count && (
-                                <>
-                                    <div className="rounded-lg bg-gray-400  light:bg-gray-600 h-32 flex items-center justify-center">
-                                        <UserIcon className="h-16 w-16 text-white" />
-                                        <div className="text-4xl text-white ml-4">{count.candidates}</div>
-                                        <div className="text-lg text-white ml-2">Étudiants</div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                        {count && (
+                            <>
+                                <div className="rounded-lg bg-green-800 text-white flex items-center justify-center p-6">
+                                    <UserIcon className="h-12 w-12" />
+                                    <div className="ml-4">
+                                        <div className="text-3xl font-semibold">{count.candidates}</div>
+                                        <div className="text-sm">Étudiants</div>
                                     </div>
-                                    <div className="rounded-lg bg-gray-400  light:bg-gray-600 h-32 flex items-center justify-center">
-                                        <QuestionMarkCircleIcon className="h-16 w-16 text-white" />
-                                        <div className="text-4xl text-white ml-4">{count.questions}</div>
-                                        <div className="text-lg text-white ml-2">Questions</div>
+                                </div>
+                                <div className="rounded-lg bg-red-800 text-white flex items-center justify-center p-6">
+                                    <QuestionMarkCircleIcon className="h-12 w-12" />
+                                    <div className="ml-4">
+                                        <div className="text-3xl font-semibold">{count.questions}</div>
+                                        <div className="text-sm">Questions</div>
                                     </div>
-                                    <div className="rounded-lg bg-gray-400  light:bg-gray-600 h-32 flex items-center justify-center">
-                                        <AcademicCapIcon className="h-16 w-16 text-white" />
-                                        <div className="text-4xl text-white ml-4">{count.subjects}</div>
-                                        <div className="text-lg text-white ml-2">Sujets</div>
+                                </div>
+                                <div className="rounded-lg bg-blue-800 text-white flex items-center justify-center p-6">
+                                    <AcademicCapIcon className="h-12 w-12" />
+                                    <div className="ml-4">
+                                        <div className="text-3xl font-semibold">{count.subjects}</div>
+                                        <div className="text-sm">Sujets</div>
                                     </div>
-                                    <div className="rounded-lg bg-gray-400  light:bg-gray-600 h-32 flex items-center justify-center">
-                                        <BookOpenIcon className="h-16 w-16 text-white" />
-                                        <div className="text-4xl text-white ml-4">{count.interviews}</div>
-                                        <div className="text-lg text-white ml-2">Tests</div>
+                                </div>
+                                <div className="rounded-lg bg-yellow-800 text-white flex items-center justify-center p-6">
+                                    <BookOpenIcon className="h-12 w-12" />
+                                    <div className="ml-4">
+                                        <div className="text-3xl font-semibold">{count.interviews}</div>
+                                        <div className="text-sm">Tests</div>
                                     </div>
-                                </>
-                            )}
+                                </div>
+                            </>
+                        )}
+                    </div>
+                    <div className="p-5 shadow-sm rounded-lg">
+                        <h3 className="text-lg font-semibold mb-3 relative">
+                            Utilisateurs Connectés
+                            <span className="absolute top-0 right-0 transform translate-x-2 -translate-y-2 inline-block text-xs bg-red-800 text-white rounded-full px-2 py-0.5">
+                                {authenticatedUsers.length > 0 && authenticatedUsers.length}
+                            </span>
+                        </h3>
+                        <div className="overflow-y-auto max-h-80">
+                            <ul className="divide-y divide-gray-200">
+                                {authenticatedUsers.map((user) => (
+                                    <li key={user.id} className="py-4 flex items-center gap-4 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 rounded-lg">
+                                        <div className="flex-shrink-0">
+                                            <UserIcon className="h-8 w-8 text-gray-600" />
+                                        </div>
+                                        <div className="text-sm font-medium text-gray-900">{user.name}</div>
+                                    </li>
+                                ))}
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="p-5 bg-white shadow-sm rounded-lg">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-3"> {authenticatedUsers.length>0 && authenticatedUsers.length} Utilisateurs Connectés</h3>
-                        <ul className="divide-y divide-gray-200">
-                            {authenticatedUsers.map(user => (
-                                <li key={user.id} className="py-3 flex items-center">
-                                    <div className="flex-shrink-0">
-                                        <UserIcon className="h-8 w-8 text-gray-600" />
-                                    </div>
-                                    <div className="ml-3">
-                                        <div className="text-sm font-medium text-gray-900 ">{user.name}</div>
-                                        {/* <div className="text-xs text-gray-500">Dernière activité : {user.last_active}</div> */}
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                </div>
         </AuthenticatedLayout>
     );
 }

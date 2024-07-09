@@ -3,6 +3,7 @@ import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
 import SecondaryButton from "@/Components/SecondaryButton";
 import Select from "@/Components/Select";
+import SuccessButton from "@/Components/SuccessButton";
 import TextInput from "@/Components/TextInput";
 import React, { useState, useEffect } from "react";
 
@@ -67,7 +68,7 @@ export default function Form({
 
     return (
         <form className="p-5" onSubmit={handleSubmit}>
-            <div className="p-6 max-w-xl mx-auto bg-white rounded-lg shadow-md">
+            <div className="p-6 max-w-xl mx-auto bg-black rounded-lg shadow-md">
                 <fieldset className="gap-2">
                     <div>
                         <InputLabel htmlFor="question" value="Question" />
@@ -120,7 +121,7 @@ export default function Form({
                     </div>
                 </fieldset>
                 <div className="space-y-2">
-                    <span className="text-md">Réponses:</span>
+                    <span className="text-md text-white">Réponses:</span>
                     {answers.map((answer, index) => (
                         <div key={index} className="flex items-center space-x-2">
                             <input
@@ -137,7 +138,7 @@ export default function Form({
                                         onChange={handleCheckboxChange(index)}
                                         className="rounded border-gray-300 shadow-sm focus:border-blue-400 focus:ring focus:ring-blue-200"
                                     />
-                                    <span className="text-lg">Correct</span>
+                                    <span className="text-lg text-white">Correct</span>
                                 </label>
                             )}
                             {index > 0 && (
@@ -149,20 +150,20 @@ export default function Form({
                     ))}
                     {data.type === "qcm" && (
                         <div className="flex items-center space-x-2">
-                            <PrimaryButton type="button" onClick={handleAddAnswer}>
+                            <SuccessButton type="button" onClick={handleAddAnswer}>
                                 +
-                            </PrimaryButton>
+                            </SuccessButton>
                         </div>
                     )}
                 </div>
             </div>
             <div className="flex items-center justify-end mt-4">
-                <PrimaryButton className="ms-4" type="submit" disabled={processing}>
-                    {mode === "creation" ? "Créer" : "Modifier"}
-                </PrimaryButton>
                 <SecondaryButton className="ms-4" onClick={onCancel} disabled={processing}>
                     Annuler
                 </SecondaryButton>
+                <SuccessButton className="ms-4" type="submit" disabled={processing}>
+                    {mode === "creation" ? "Créer" : "Modifier"}
+                </SuccessButton>
             </div>
         </form>
     );

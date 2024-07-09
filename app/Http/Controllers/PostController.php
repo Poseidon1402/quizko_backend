@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
@@ -13,10 +14,16 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::with('candidates.user')->get();
-       return Inertia::render('Post/Index', [
-        'posts' => $posts,
-    ]);
+        $user=Auth::user();
+        if( $user &&( $user->role==="admin"||$user->role=="recruiter")){
+            $posts = Post::with('candidates.user')->get();
+            return Inertia::render('Post/Index', [
+             'posts' => $posts,
+         ]);
+        }else{
+            $posts = Post::all();
+            return response()->json(['data' =>$posts]);  
+        }
     }
 
     /**

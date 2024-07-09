@@ -39,7 +39,7 @@ export default function Avatar({
                 <div
                     className={`inline-block ${sizeClass} rounded-full ring-1 ring-gray-800 flex items-center justify-center ${className}`}
                 >
-                    <UserIcon className={`${sizeClass} text-gray-500`} />
+                    <UserIcon className={`${sizeClass} text-gr-500`} />
                 </div>
             )}
         </>

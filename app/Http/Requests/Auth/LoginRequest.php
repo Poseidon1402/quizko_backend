@@ -31,6 +31,17 @@ class LoginRequest extends FormRequest
             'password' => ['required', 'string'],
         ];
     }
+    
+    public function messages()
+    {
+        return [
+            'email.required' => 'Le champ email est obligatoire.',
+            'email.string' => 'Le champ email doit être une chaîne de caractères.',
+            'email.email' => 'Le champ email doit être une adresse e-mail valide.',
+            'password.required' => 'Le champ mot de passe est obligatoire.',
+            'password.string' => 'Le champ mot de passe doit être une chaîne de caractères.',
+        ];
+    }
 
     /**
      * Attempt to authenticate the request's credentials.

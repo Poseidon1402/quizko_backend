@@ -44,7 +44,7 @@ class ProfileController extends Controller
             if ($user->role === 'candidate') {
                 $candidate = $user->candidate;
                 if ($candidate) {
-                    $candidateData = $request->only(['registration_number', 'gender', 'post_id']);
+                    $candidateData = $request->only(['registration_number', 'phone','gender', 'post_id']);
                     $candidate->update($candidateData);
                     
                     $user->load('candidate');

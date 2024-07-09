@@ -1,12 +1,12 @@
 
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
-import PrimaryButton from "@/Components/PrimaryButton";
 import SecondaryButton from "@/Components/SecondaryButton";
 import TextInput from "@/Components/TextInput";
 import {  useEffect } from "react";
 import Select from "@/Components/Select";
 import { usePage } from "@inertiajs/react";
+import SuccessButton from "@/Components/SuccessButton";
 
 export default function Form({
     mode = "creation",
@@ -146,13 +146,13 @@ export default function Form({
                     Annuler
                 </SecondaryButton>
 
-                <PrimaryButton
+                <SuccessButton
                     className="ms-4"
                     type="submit"
                     disabled={processing}
                 >
                  {mode==="creation"? "Créer" : "Modifier"}
-                </PrimaryButton>
+                </SuccessButton>
             </div>
         </form>
     );

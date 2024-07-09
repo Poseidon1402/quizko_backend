@@ -2,12 +2,11 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import Datagrid from "@/Components/Datagrid";
 import Modal from "@/Components/Modal";
 import { PencilIcon, EyeIcon,TrashIcon } from "@heroicons/react/24/outline";
-import Form from "./Form";
-import { Transition } from "@headlessui/react";
-import { Head, Link, useForm } from "@inertiajs/react";
+import { Head, Link, useForm, } from "@inertiajs/react";
 import { useEffect, useMemo, useState } from "react";
 import SecondaryButton from "@/Components/SecondaryButton";
 import DeletionConfirmation from "@/Components/DeletionConfirmation";
+import Breadcrumb from "@/Components/Breadcrumbs/Breadcrumb";
 
 
 export default function Index({ auth, subjects, questions}) {
@@ -19,7 +18,6 @@ export default function Index({ auth, subjects, questions}) {
     const {
         data,
         setData,
-        post,
         put,
         delete: destroy,
         processing,
@@ -47,6 +45,7 @@ export default function Index({ auth, subjects, questions}) {
             setShowQuestionsModal(true);
         },
     });
+
     useEffect(() => {
         if (hasErrors) {
             reset("subject");
@@ -65,12 +64,6 @@ export default function Index({ auth, subjects, questions}) {
         }
     }, [hasErrors, recentlySuccessful]);
 
-    const handleCreationSubmit = (e) => {
-        e.preventDefault();
-        console.log(data);
-        post(route("subjects.store"));
-    };
-
     const handleEditionSubmit = (e) => {
         e.preventDefault();
         put(route("subjects.update", selectedData.id));
@@ -82,94 +75,39 @@ export default function Index({ auth, subjects, questions}) {
         setSelectedData(null);
         setShowDeletionModal(false);
     };
-    console.log(subjects);
-    return (
+  return (
         <AuthenticatedLayout
             user={auth.user}
-            header={
-                <h2 className="font-semibold text-xl text-gray-800 light:text-gray-200  leading-tight">
-                   Sujets
-                </h2>
-            }
         >
             <Head title="Sujets" />
-
+            <Breadcrumb pageName="Sujets" />
             <div className="py-12">
                    <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                   <div className="mb-4 flex justify-between items-center space-x-4">
+                        <div className="flex items-center space-x-4">
+                            <label className="font-semibold">Filtrer par :</label>
+                            <input
+                                type="text"
+                                placeholder="Rechercher un sujet"
+                               // value={search}
+                               // onChange={(e) => setSearch(e.target.value)}
+                                className="p-2 border border-gray-300 rounded-md"
+                            />
+                        </div>
+                        <Link 
+                            href={route("subjects.create")}
+                            className="inline-flex items-center justify-center rounded-md bg-meta-3 py-2 px-5 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"    
+                        >
+                            Ajouter un sujet
+                        </Link>
+                    </div>
                         <Datagrid
                             columns={columns}
                             rows={subjects}
-                            canCreate={true}
-                            onCreate={() => setShowCreationModal(true)}
+                            canCreate={false}
                         />
                     </div>
             </div>
-
-            <Modal
-                show={showCreationModal}
-                title="Ajouter une question"
-                onClose={() => setShowCreationModal(false)}
-            >
-                <Transition
-                    show={hasErrors}
-                    enter="transition ease-in-out"
-                    enterFrom="opacity-0"
-                    leave="transition ease-in-out"
-                    leaveTo="opacity-0"
-                >
-                    <p className="text-sm text-center text-red-600 dark:text-red-400">
-                        Quelque chose s'est mal passé.
-                    </p>
-                </Transition>
-                <Form
-                    mode={showEditionModal ? "editon" : ("creation")}
-                    data={data}
-                    setData={setData}
-                    errors={errors}
-                    processing={processing}
-                    onSubmit={
-                        showEditionModal
-                            ? handleEditionSubmit
-                            : handleCreationSubmit
-                    }
-                    onCancel={() => {
-                        cancel();
-                        setShowCreationModal(false);
-                    }}
-                    onReset={() => reset("name")}
-                />
-            </Modal>
-
-            <Modal
-                show={showEditionModal}
-                title="Modifier un sujet"
-                onClose={() => setShowEditionModal(false)}
-            >
-                <Transition
-                    show={hasErrors}
-                    enter="transition ease-in-out"
-                    enterFrom="opacity-0"
-                    leave="transition ease-in-out"
-                    leaveTo="opacity-0"
-                >
-                    <p className="text-sm text-center text-red-600 dark:text-red-400">
-                        Quelque chose s'est mal passé.
-                    </p>
-                </Transition>
-                <Form
-                    mode="edition"
-                    data={data}
-                    setData={setData}
-                    errors={errors}
-                    processing={processing}
-                    onSubmit={handleEditionSubmit}
-                    onCancel={() => {
-                        cancel();
-                        setShowEditionModal(false);
-                    }}
-                    onReset={() => reset()}
-                />
-            </Modal>
 
             <Modal
                 show={showDeletionModal}
@@ -193,8 +131,8 @@ export default function Index({ auth, subjects, questions}) {
                 title="Questions du sujet"
                 onClose={() => setShowQuestionsModal(false)}
             >
-               <div className="p-4 m-5">
-                    <h1 className="text-md text-center text-gray-800 mb-4">
+               <div className="p-4 m-5 text-white">
+                    <h1 className="text-md text-center  mb-4">
                         Sujet : {selectedData?.subject} <span className="text-red-400">({selectedData?.total_points} points</span>)
                     </h1>
                     <h2 className="text-lg font-bold mb-2">
@@ -229,7 +167,7 @@ const useColumns = (
             {
                 accessorKey: "subject",
                 cell: (info) =>
-                    `${(info.getValue())}`,
+                (<span className="bg-blue-600 p-2 rounded-md text-white">{info.getValue()}</span>),
                 header: () => "Sujet",
             },
             {
@@ -239,7 +177,7 @@ const useColumns = (
             },
             {
                 accessorKey: "total_points",
-                cell: (info) => `${(info.getValue())}`,
+                cell: (info) =>(<span className="bg-green-400 p-1 rounded-md text-white">{info.getValue()}</span>),
                 header: () => "Total Points",
             },
            {

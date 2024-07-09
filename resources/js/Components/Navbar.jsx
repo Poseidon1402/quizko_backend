@@ -10,7 +10,7 @@ export default function Navbar({ user }) {
         useState(false);
 
     return (
-        <nav className="fixed left-0 right-0 top-0 z-50 bg-white  border-b border-gray-100 ">
+        <nav className="fixed left-0 right-0 top-0 z-50 bg-violet-900  border-b border-gray-100 ">
             <div className="max-w-7xl mx-auto">
                 <div className="flex items-center justify-between h-16">
                     <Link href="/">

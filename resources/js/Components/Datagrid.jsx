@@ -20,6 +20,7 @@ import {
 import { ReactNode, useReducer, useRef, useState } from "react";
 import Pagination from "./Pagination";
 import PrimaryButton from "./PrimaryButton";
+import SuccessButton from "./SuccessButton";
 
 export default function Datagrid({
     className,
@@ -62,7 +63,7 @@ export default function Datagrid({
     const tableContainerRef = useRef(null);
 
     return (
-        <div className={`relative overflow-hidden bg-white shadow-md sm:rounded-lg ${className}`}>
+        <div className={`relative overflow-hidden bg-black shadow-md sm:rounded-lg ${className}`}>
             {(canCreate || filter || actions) && (
                 <div className="flex flex-col items-center justify-between space-y-3 p-4 md:flex-row md:space-x-4 md:space-y-0">
                     {filter && (
@@ -79,15 +80,14 @@ export default function Datagrid({
                     )}
                     <div className="flex w-full flex-shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
                         {canCreate && (
-                            <PrimaryButton
+                            <SuccessButton
                                 data-testid="add-button"
                                 type="button"
-                                className="bg-primary-600 hover:bg-primary-700 focus:ring-primary-300 flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium text-white focus:ring-4"
                                 onClick={onCreate}
                             >
                                 <PlusIcon className="mr-2 h-3.5 w-3.5" />
                                 Ajouter
-                            </PrimaryButton>
+                            </SuccessButton>
                         )}
                     </div>
                     {actions && <>{actions}</>}
@@ -122,7 +122,7 @@ export default function Datagrid({
                     </thead>
                     <tbody>
                         {_rows.map((row, rowIndex) => (
-                            <tr key={row.id} className={`${rowIndex % 2 === 0 ? "bg-gray-100" : "bg-white"} border-b border-gray-300`}>
+                            <tr key={row.id} className={`${rowIndex % 2 === 0 ? "bg-gray-100" : "bg-black"} border-b border-gray-300`}>
                                 {row.getVisibleCells().map((cell) => (
                                     <td key={cell.id} className="px-4 py-3">
                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}

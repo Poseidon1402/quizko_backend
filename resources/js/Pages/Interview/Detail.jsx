@@ -2,11 +2,13 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import Datagrid from "@/Components/Datagrid";
 import Modal from "@/Components/Modal";
 import { EyeIcon, CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { Head, useForm } from "@inertiajs/react";
+import { Head, Link, useForm } from "@inertiajs/react";
 import { useEffect, useMemo, useState } from "react";
 import PrimaryButton from "@/Components/PrimaryButton";
 import SecondaryButton from "@/Components/SecondaryButton";
 import { CSVLink } from 'react-csv';
+import Breadcrumb from "@/Components/Breadcrumbs/Breadcrumb";
+import SuccessButton from "@/Components/SuccessButton";
 
 export default function Detail({ auth, candidate_answers, interview }) {
     const [showModal, setShowModal] = useState(false);
@@ -70,19 +72,28 @@ export default function Detail({ auth, candidate_answers, interview }) {
                 </h2>
             }
         >
-            <Head title="Résultat" />
+            <Head title="Résultats" />
+            <Breadcrumb pageName="Résultats" />
+                     <Link
+                         href={`/results`}
+                         className={
+                            "inline-flex items-center justify-center rounded-md bg-meta-3 py-2 px-5 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10 " 
+                            }           
+                    >
+                        Retour
+                    </Link>
             <div className="text-end">
                 <CSVLink
                     data={excelResult}
                     filename={filename}
-                    className="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
-                >
+                    className="inline-flex items-center justify-center rounded-md bg-primary py-2 px-5 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+                    >
                     Exporter en Excel
                 </CSVLink>
             </div>
-            <div className="py-12">
+            <div className="py-3">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="mb-4">
+                    <div className="">
                         <input
                             type="text"
                             placeholder="Rechercher par nom ou matricule"
@@ -105,7 +116,7 @@ export default function Detail({ auth, candidate_answers, interview }) {
                     title={"Réponses de l'étudiant " + selectedCandidate.candidate.name + " :"}
                     onClose={() => setShowModal(false)}
                 >
-                    <div className="space-y-2 overflow-y-auto max-h-80">
+                    <div className="space-y-2 text-white overflow-y-auto max-h-80">
                         {selectedCandidate.answers.length > 0 ? (
                             selectedCandidate.answers.map(answer => (
                                 <div key={answer.id} className="border-b border-gray-200 pb-4">
@@ -118,14 +129,14 @@ export default function Detail({ auth, candidate_answers, interview }) {
                                                     <XMarkIcon className="w-4 h-4 text-red-500 inline-block align-middle" />
                                                 }
                                             </p>
-                                            <p className="text-sm text-gray-600">Point : {answer.answer_point}</p>
+                                            <p className="text-sm">Point : {answer.answer_point}</p>
                                         </>
                                     ) : (
                                         <>
-                                            <p className="text-sm text-gray-600">
+                                            <p className="text-sm">
                                                 Réponse de l'étudiant : {answer.answer_of_candidate}
                                             </p>
-                                            <p className="text-sm text-gray-600">Point : {answer.answer_point}</p>
+                                            <p className="text-sm">Point : {answer.answer_point}</p>
                                         </>
                                     )}
                                 </div>
@@ -136,8 +147,8 @@ export default function Detail({ auth, candidate_answers, interview }) {
                     </div>
                     <form onSubmit={handleEditionSubmit} className="shadow-lg p-2">
                         <div className="flex justify-between items-center m-4">
-                            <div> Note provisoire : {selectedCandidate.note.interim_note}</div>
-                            <div> Note : {selectedCandidate.note.note === null ? (<span className="text-red-400">En attente</span>) : selectedCandidate.note.note}</div>
+                            <div className="text-white"> Note provisoire : {selectedCandidate.note.interim_note}</div>
+                            <div className="text-white"> Note : {selectedCandidate.note.note === null ? (<span className="text-red-400">En attente</span>) : selectedCandidate.note.note}</div>
                             <div className="flex items-center">
                                 <input
                                     value={data.note}
@@ -156,12 +167,12 @@ export default function Detail({ auth, candidate_answers, interview }) {
                             >
                                 Annuler
                             </SecondaryButton>
-                            <PrimaryButton
+                            <SuccessButton
                                 className="ms-4 text-sm"
                                 type="submit"
                             >
                                 Valider
-                            </PrimaryButton>
+                            </SuccessButton>
                         </div>
                     </form>
                 </Modal>
@@ -176,7 +187,7 @@ const useColumns = (props) => {
             {
                 accessorKey: "candidate.matricule",
                 cell: (info) =>
-                    `${info.getValue()}`,  
+                (<span className="bg-blue-600 p-2 rounded-md text-white">{info.getValue()}</span>),  
                 header: () => "Matricule",
             },
             {
@@ -188,7 +199,14 @@ const useColumns = (props) => {
             {
                 accessorKey: "note",
                 cell: (info) => (
-                    <span>{(info.getValue()?.note === null ? "Note provisoire : " + info.getValue()?.interim_note : "Note : " + info.getValue()?.note) || ''}</span>
+                    <span className={`px-2 py-1 rounded-md ${
+                        info.getValue()?.note === null ? 'bg-yellow-100 text-yellow-900' : 'bg-green-100 text-green-800'
+                    }`}>
+                        {info.getValue()?.note === null ? 
+                            `Note provisoire : ${info.getValue()?.interim_note}` : 
+                            `Note : ${info.getValue()?.note}`
+                        }
+                    </span>
                 ),
                 header: () => "Note",
             },
@@ -197,16 +215,13 @@ const useColumns = (props) => {
                 id: "id",
                 cell: (info) => (
                     <div className="flex space-x-2">
-                        <button
-                            className={
-                                "p-1 border border-transparent rounded-md"
-                            }
+                        <SuccessButton
                             onClick={() => {
                                 props.onView(info.getValue());
                             }}
                         >
-                            <EyeIcon className="w-5 h-5 text-gray-600" />
-                        </button>
+                           Voir les réponses
+                        </SuccessButton>
                     </div>
                 ),
                 header: () => "Action",

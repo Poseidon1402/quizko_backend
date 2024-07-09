@@ -7,6 +7,8 @@ import { Transition } from "@headlessui/react";
 import { Head, Link, useForm } from "@inertiajs/react";
 import { useEffect, useMemo, useState } from "react";
 import DeletionConfirmation from "@/Components/DeletionConfirmation";
+import Breadcrumb from "@/Components/Breadcrumbs/Breadcrumb";
+import Switcher from "@/Components/Switcher";
 
 
 export default function Index({ auth, interviews, subjects,  posts}) {
@@ -83,14 +85,9 @@ export default function Index({ auth, interviews, subjects,  posts}) {
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={
-                <h2 className="font-semibold text-xl text-gray-800 light:text-gray-200  leading-tight">
-                    Tests
-                </h2>
-            }
         >
             <Head title="Tests" />
-
+            <Breadcrumb pageName="Tests" />
             <div className="py-12">
                    <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                         <Datagrid
@@ -195,8 +192,7 @@ const useColumns = (
         return [
             {
                 accessorKey: "name",
-                cell: (info) =>
-                    `${(info.getValue())}`,
+                cell: (info) =>(<span className="text-yellow-300">{info.getValue()}</span>),
                 header: () => "Nom du test",
             },
             {
@@ -213,7 +209,7 @@ const useColumns = (
             },
             {
                 accessorKey: "time",
-                cell: (info) =>(<span>{info.getValue()}</span>),
+                cell: (info) =>(<span className="bg-green-400 p-1 rounded-md text-white">{info.getValue()}</span>),
                 header: () => "Durée",
             },
             {
@@ -228,11 +224,19 @@ const useColumns = (
                     `${(info.getValue())}`,
                 header: () => "Sujet",
             },
-             {
+            {
                 accessorKey: "is_expired",
-                cell: (info) =>(<span>{info.getValue()?"Expiré":"Non expiré"}</span>),
+                cell: (info) => (
+                    <span
+                        className={`px-2 py-1 inline-flex text-xs font-semibold rounded-md ${
+                            info.getValue() ? "text-red-800" : "text-green-400"
+                        }`}
+                    >
+                        {info.getValue() ? "Expiré" : "Non expiré"}
+                    </span>
+                ),
                 header: () => "Status",
-            },
+            },            
            {
                 accessorFn: (row) => row,
                 id: "id",
@@ -244,7 +248,7 @@ const useColumns = (
                             "p-1 border border-transparent rounded-md"
                         }           
                     >
-                        <EyeIcon className="w-5 h-5 text-gray-600" />
+                        <Switcher />
                      
                     </Link>
                 

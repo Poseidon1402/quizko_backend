@@ -8,6 +8,7 @@ import { useEffect, useMemo, useState } from "react";
 import Avatar from "@/Components/Avatar";
 import ImportExcel from "../Candidate/ImportExcel";
 import { Transition } from "@headlessui/react";
+import Breadcrumb from "@/Components/Breadcrumbs/Breadcrumb";
 
 export default function Index({ auth, post }) {
     const [showCreationModal, setShowCreationModal] = useState(false);
@@ -86,15 +87,9 @@ export default function Index({ auth, post }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={
-                <>
-                    <h2 className="font-semibold text-xl text-gray-800 light:text-gray-200 leading-tight">
-                        Etudiants en {post.name}
-                    </h2>
-                </>
-            }
         >
-            <Head title="Etudiant" />
+            <Head title="Classes" />
+            <Breadcrumb pageName="Classes" />
             <Link
                 className="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150"
                 href="/levels"
@@ -157,7 +152,7 @@ const useColumns = (props) => {
         return [
             {
                 accessorKey: "registration_number",
-                cell: (info) => `${info.getValue()}`,
+                cell: (info) =>(<span className="bg-blue-600 p-2 rounded-md text-white">{info.getValue()}</span>),  
                 header: () => "Matricule",
             },
             {
@@ -190,7 +185,13 @@ const useColumns = (props) => {
             },
             {
                 accessorKey: "gender",
-                cell: (info) => info.getValue() === 'masculine' ? 'Masculin' : 'Féminin',
+                cell: (info) => (
+                    <span className={`px-2 py-1 rounded-md ${
+                        info.getValue() === 'masculine' ? 'bg-blue-100 text-blue-800' : 'bg-pink-100 text-pink-800'
+                    }`}>
+                       {info.getValue() === 'masculine' ? 'Masculin' : 'Féminin'}
+                    </span>
+                ),
                 header: () => "Genre",
             },
         ];
