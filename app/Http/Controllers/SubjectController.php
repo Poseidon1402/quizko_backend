@@ -73,7 +73,7 @@ class SubjectController extends Controller
         foreach ($questionsData as $question) {
             $subject->questions()->attach($question);
         }
-            redirect(route('subjects.index'));
+           return redirect(route('subjects.index'));
         }
 
     public function destroy($id)

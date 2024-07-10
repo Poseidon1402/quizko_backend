@@ -6,19 +6,19 @@ import DarkModeSwitcher from './DarkModeSwitcher';
 
 const Header = (props) => {
   return (
-    <header className="sticky top-0 z-999 flex w-full bg-white drop-shadow-1 dark:bg-boxdark dark:drop-shadow-none">
+    <header className="sticky top-0 z-[999] flex w-full bg-white drop-shadow-1 dark:bg-boxdark dark:drop-shadow-none">
       <div className="flex flex-grow items-center justify-between px-4 py-4 shadow-2 md:px-6 2xl:px-11">
         <div className="flex items-center gap-2 sm:gap-4 lg:hidden">
-          {/* <!-- Hamburger Toggle BTN --> */}
+          {/* Hamburger Toggle BTN */}
           <button
             aria-controls="sidebar"
             onClick={(e) => {
               e.stopPropagation();
               props.setSidebarOpen(!props.sidebarOpen);
             }}
-            className="z-99999 block rounded-sm border border-stroke bg-white p-1.5 shadow-sm dark:border-strokedark dark:bg-boxdark lg:hidden"
+            className="z-[99999] block rounded-sm border border-stroke bg-white p-1.5 shadow-sm dark:border-strokedark dark:bg-boxdark lg:hidden"
           >
-            <span className="relative block h-5.5 w-5.5 cursor-pointer">
+            <span className="relative block h-[5.5px] w-[5.5px] cursor-pointer">
               <span className="du-block absolute right-0 h-full w-full">
                 <span
                   className={`relative left-0 top-0 my-1 block h-0.5 w-0 rounded-sm bg-black delay-[0] duration-200 ease-in-out dark:bg-white ${
@@ -50,7 +50,7 @@ const Header = (props) => {
               </span>
             </span>
           </button>
-          {/* <!-- Hamburger Toggle BTN --> */}
+          {/* Hamburger Toggle BTN */}
 
           <Link className="block flex-shrink-0 lg:hidden" href="/">
             <img src={ApplicationLogo} alt="Logo" />
@@ -60,7 +60,7 @@ const Header = (props) => {
         <div className="hidden sm:block">
           <form action="https://formbold.com/s/unique_form_id" method="POST">
             <div className="relative">
-              <button className="absolute left-0 top-1/2 -translate-y-1/2">
+              <button className="absolute left-0 top-1/2 -translate-y-1/2 p-2">
                 <svg
                   className="fill-body hover:fill-primary dark:fill-bodydark dark:hover:fill-primary"
                   width="20"
@@ -86,8 +86,8 @@ const Header = (props) => {
 
               <input
                 type="text"
-                placeholder="Type to search..."
-                className="w-full bg-transparent pl-9 pr-4 text-black focus:outline-none dark:text-white xl:w-125"
+                placeholder="Rechercher..."
+                className="w-full rounded-full bg-gray-200 pl-10 pr-4 py-2 text-black focus:outline-none dark:bg-gray-800 dark:text-white xl:w-125"
               />
             </div>
           </form>
@@ -95,22 +95,22 @@ const Header = (props) => {
 
         <div className="flex items-center gap-3 2xsm:gap-7">
           <ul className="flex items-center gap-2 2xsm:gap-4">
-            {/* <!-- Dark Mode Toggler --> */}
-            <DarkModeSwitcher />
-            {/* <!-- Dark Mode Toggler --> */}
+            {/* Dark Mode Toggler */}
+            {/* <DarkModeSwitcher /> */}
+            {/* Dark Mode Toggler */}
 
-            {/* <!-- Notification Menu Area --> */}
+            {/* Notification Menu Area */}
             {/* <DropdownNotification /> */}
-            {/* <!-- Notification Menu Area --> */}
+            {/* Notification Menu Area */}
 
-            {/* <!-- Chat Notification Area --> */}
+            {/* Chat Notification Area */}
             {/* <DropdownMessage /> */}
-            {/* <!-- Chat Notification Area --> */}
+            {/* Chat Notification Area */}
           </ul>
 
-          {/* <!-- User Area --> */}
+          {/* User Area */}
           <DropdownUser user={props.user}/>
-          {/* <!-- User Area --> */}
+          {/* User Area */}
         </div>
       </div>
     </header>

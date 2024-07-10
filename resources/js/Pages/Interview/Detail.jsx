@@ -73,7 +73,7 @@ export default function Detail({ auth, candidate_answers, interview }) {
             }
         >
             <Head title="Résultats" />
-            <Breadcrumb pageName="Résultats" />
+            <Breadcrumb pageName={"Résultat du text "+interview[0]?.name+"/classe : "+interview[0]?.post?.name}/>
                      <Link
                          href={`/results`}
                          className={
@@ -93,13 +93,13 @@ export default function Detail({ auth, candidate_answers, interview }) {
             </div>
             <div className="py-3">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="">
+                    <div className="mb-2">
                         <input
                             type="text"
                             placeholder="Rechercher par nom ou matricule"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:border-blue-400 focus:ring focus:ring-blue-200 text-sm"
+                            className="w-full text-black px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:border-blue-400 focus:ring focus:ring-blue-200 text-sm"
                         />
                     </div>
                     <Datagrid
@@ -196,15 +196,26 @@ const useColumns = (props) => {
                     `${info.getValue()}`,
                 header: () => "Nom",
             },
+             {
+                accessorKey: "note",
+                cell: (info) => (
+                    <span className={`px-2 py-1 rounded-md bg-yellow-400 text-md text-yellow-900 `}>
+                        {
+                            `${info.getValue()?.interim_note}`
+                        }
+                    </span>
+                ),
+                header: () => "Note provisoire",
+            },
             {
                 accessorKey: "note",
                 cell: (info) => (
                     <span className={`px-2 py-1 rounded-md ${
-                        info.getValue()?.note === null ? 'bg-yellow-100 text-yellow-900' : 'bg-green-100 text-green-800'
+                        info.getValue()?.note === null ? 'bg-yellow-100 text-yellow-900 text-xs ' : 'bg-red-500 text-md text-white'
                     }`}>
                         {info.getValue()?.note === null ? 
-                            `Note provisoire : ${info.getValue()?.interim_note}` : 
-                            `Note : ${info.getValue()?.note}`
+                            `En attente` : 
+                            `${info.getValue()?.note}`
                         }
                     </span>
                 ),
@@ -219,8 +230,9 @@ const useColumns = (props) => {
                             onClick={() => {
                                 props.onView(info.getValue());
                             }}
+                        className="inline-flex items-center justify-center rounded-md py-2 px-2 text-center font-medium text-white hover:bg-opacity-90 lg:px-2 xl:px-3"
                         >
-                           Voir les réponses
+                           <EyeIcon className="w-5 h-5" />
                         </SuccessButton>
                     </div>
                 ),
@@ -229,3 +241,4 @@ const useColumns = (props) => {
         ];
     }, [props]);
 };
+
