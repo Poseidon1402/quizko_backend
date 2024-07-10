@@ -69,6 +69,7 @@ class QuestionController extends Controller
             $question = Question::findOrFail($id);
 
             $question->question = $request->input('question');
+            $question->type = $request->input('type');
             $question->point = $request->input('point');
 
             $question->save();
