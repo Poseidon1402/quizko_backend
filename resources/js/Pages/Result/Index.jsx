@@ -1,137 +1,77 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import Datagrid from "@/Components/Datagrid";
-import { PencilIcon, EyeIcon,TrashIcon } from "@heroicons/react/24/outline";
-import { Transition } from "@headlessui/react";
-import { Head, Link, useForm } from "@inertiajs/react";
-import { useEffect, useMemo, useState } from "react";
-import DeletionConfirmation from "@/Components/DeletionConfirmation";
+import { Link, Head } from "@inertiajs/react";
+import { useMemo, useState } from "react";
 import Breadcrumb from "@/Components/Breadcrumbs/Breadcrumb";
 
+export default function Index({ auth, interviews }) {
+    const [searchTerm, setSearchTerm] = useState("");
 
-export default function Index({ auth, interviews, subjects,  posts}) {
-    const [selectedData, setSelectedData] = useState(null);
-    const {
-        data,
-        setData,
-        post,
-        put,
-        delete: destroy,
-        processing,
-        errors,
-        reset,
-        cancel,
-        hasErrors,
-        recentlySuccessful,
-    } = useForm({
-        name: "",  
-        start_date: "",  
-        end_date: "",  
-        time: "",
-        subject_id: "",  
-        post_id: "",  
-    });
-    const columns = useColumns({
-        onEdit: (data) => {
-            setSelectedData(data);
-            setData(data);
-            setShowEditionModal(true);
-        },
-        onDelete: (data) => {
-            setSelectedData(data);
-            setShowDeletionModal(true);
-        },
-    });
-    useEffect(() => {
-        if (hasErrors) {
-            reset("end_date","post_id","subject_id","time");
-        }
+    const columns = useColumns(searchTerm);
 
-        if (recentlySuccessful) {
-            reset();
-
-            if (showCreationModal) {
-                setShowCreationModal(false);
-            }
-
-            if (showEditionModal) {
-                setShowEditionModal(false);
-            }
-        }
-    }, [hasErrors, recentlySuccessful]);
-
-    const handleCreationSubmit = (e) => {
-        e.preventDefault();
-        post(route("tests.store"));
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value);
     };
 
-    const handleEditionSubmit = (e) => {
-        put(route("tests.update", selectedData.id));
-        console.log(data);
-    };
-
-    const handleDeletionSubmit = (e) => {
-        e.preventDefault();
-        destroy(route("tests.destroy", selectedData));
-        setSelectedData(null);
-        setShowDeletionModal(false);
-    };
-    console.log("interviews", interviews,"subjects", subjects ,"posts", posts);
     return (
-        <AuthenticatedLayout
-            user={auth.user}
-        >
+        <AuthenticatedLayout user={auth.user}>
             <Head title="Résultats" />
             <Breadcrumb pageName="Résultats" />
             <div className="py-12">
-                   <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                        <Datagrid
-                            columns={columns}
-                            rows={interviews}
+                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                    <div className="mb-4 flex justify-end">
+                        <input
+                            type="text"
+                            value={searchTerm}
+                            onChange={handleSearchChange}
+                            placeholder="Rechercher..."
+                            className="px-3 py-2   border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                         />
                     </div>
+                    <Datagrid columns={columns} rows={filterRows(interviews, searchTerm)} />
+                </div>
             </div>
-
         </AuthenticatedLayout>
     );
 }
 
-const useColumns = (
-    props,
-)=> {
+const useColumns = (searchTerm) => {
     return useMemo(() => {
         return [
             {
                 accessorKey: "name",
-                cell: (info) =>(<span className="text-yellow-300">{info.getValue()}</span>),
+                cell: (info) => (
+                    <span className="text-yellow-300">{info.getValue()}</span>
+                ),
                 header: () => "Nom du test",
             },
             {
                 accessorKey: "start_date",
-                cell: (info) =>
-                    `${(info.getValue())}`,
+                cell: (info) => `${info.getValue()}`,
                 header: () => "Début",
             },
             {
                 accessorKey: "end_date",
-                cell: (info) =>
-                    `${(info.getValue())}`,
+                cell: (info) => `${info.getValue()}`,
                 header: () => "Fin",
             },
             {
                 accessorKey: "time",
-                cell: (info) =>(<span className="bg-green-400 p-1 rounded-md text-white">{info.getValue()}</span>),
+                cell: (info) => (
+                    <span className="bg-green-400 p-1 rounded-md text-white">
+                        {info.getValue()}
+                    </span>
+                ),
                 header: () => "Durée",
             },
             {
                 accessorKey: "post.name",
-                cell: (info) =>
-                    `${(info.getValue())}`,
+                cell: (info) => `${info.getValue()}`,
                 header: () => "Classe",
             },
             {
                 accessorKey: "subject.subject",
-                cell: (info) =>
-                    `${(info.getValue())}`,
+                cell: (info) => `${info.getValue()}`,
                 header: () => "Sujet",
             },
             {
@@ -146,26 +86,39 @@ const useColumns = (
                     </span>
                 ),
                 header: () => "Status",
-            },            
-           {
+            },
+            {
                 accessorFn: (row) => row,
                 id: "id",
                 cell: (info) => (
                     <div className="flex space-x-2">
-                    <Link
-                         href={`/students-answers/${(info.getValue()).id}`}
-                         className={
-                            "inline-flex items-center justify-center rounded-md bg-meta-3 py-2 px-5 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10 " 
-                            }           
-                    >
-                        Voir 
-                     
-                    </Link>
-                </div>
-                
+                        <Link
+                            href={`/students-answers/${info.getValue().id}`}
+                            className="inline-flex items-center justify-center rounded-md bg-meta-3 py-2 px-5 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+                        >
+                            Voir
+                        </Link>
+                    </div>
                 ),
                 header: () => "Action",
             },
         ];
-    }, [props]);
+    }, [searchTerm]);
+};
+
+const filterRows = (rows, searchTerm) => {
+    if (!searchTerm) {
+        return rows;
+    }
+
+    const normalizedSearch = searchTerm.toLowerCase().trim();
+
+    return rows.filter((row) =>
+        Object.values(row).some(
+            (value) =>
+                value &&
+                typeof value === "string" &&
+                value.toLowerCase().includes(normalizedSearch)
+        )
+    );
 };

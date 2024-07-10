@@ -111,7 +111,7 @@ export default function Index({ auth, departments}) {
                     </p>
                 </Transition>
                 <Form
-                    mode={showEditionModal ? "editon" : ("creation")}
+                    mode={showEditionModal ? "edition" : ("creation")}
                     data={data}
                     setData={setData}
                     errors={errors}
@@ -201,7 +201,7 @@ const useColumns = (
                 accessorFn: (row) => row,
                 id: "id",
                 cell: (info) => (
-                    <ActionButtons onEdit={props.onEdit} onDelete={props.onEdit} info={info}/>
+                    <ActionButtons onEdit={props.onEdit} onDelete={props.onDelete} info={info}/>
                 ),
                 header: () => "Action",
             },
