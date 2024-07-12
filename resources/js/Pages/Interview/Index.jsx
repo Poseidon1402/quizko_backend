@@ -8,11 +8,13 @@ import { Head, Link, useForm } from "@inertiajs/react";
 import { useEffect, useMemo, useState } from "react";
 import DeletionConfirmation from "@/Components/DeletionConfirmation";
 import Breadcrumb from "@/Components/Breadcrumbs/Breadcrumb";
+import { generateUniqueColor } from "@/Utils/generateUniqueColor";
 export default function Index({ auth, interviews, subjects, posts }) {
     const [showCreationModal, setShowCreationModal] = useState(false);
     const [showDeletionModal, setShowDeletionModal] = useState(false);
     const [showEditionModal, setShowEditionModal] = useState(false);
     const [selectedData, setSelectedData] = useState(null);
+    const [selectedClass, setSelectedClass] = useState("");
     const [search, setSearch] = useState(""); 
 
     const {
@@ -84,34 +86,42 @@ export default function Index({ auth, interviews, subjects, posts }) {
     };
 
     const filteredRows = useMemo(() => {
-        if (!search) {
-            return interviews; 
-        }
-        return interviews.filter((row) =>
-            row.name.toLowerCase().includes(search.toLowerCase())
-        );
-    }, [interviews, search]);
+        return interviews.filter((row) => {
+            const matchesSearch = row.name.toLowerCase().includes(search.toLowerCase());
+            const matchesClass = selectedClass ? row.post.name === selectedClass : true;
+            return matchesSearch && matchesClass;
+        });
+    }, [interviews, search, selectedClass]);    
 
     return (
         <AuthenticatedLayout user={auth.user}>
             <Head title="Tests" />
-            <Breadcrumb pageName="Tests" />
-            <div className="py-12">
+            {/* <Breadcrumb pageName="Tests" /> */}
+            <div className="">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="mb-4 flex justify-between items-center space-x-4">
-                        <div className="flex items-center space-x-4">
-                            <label className="font-semibold">
-                                Filtrer par :
-                            </label>
-                            <input
-                                type="text"
-                                placeholder="Rechercher un test"
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                                className="p-2 border border-gray-300 rounded-md"
-                            />
-                        </div>
-                       
+                    <div className="flex text-black items-center space-x-4">
+                        <label className="font-semibold">Filtrer par :</label>
+                        <input
+                            type="text"
+                            placeholder="Rechercher un test"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            className="p-2 border border-gray-300 rounded-md"
+                        />
+                        <select
+                            value={selectedClass}
+                            onChange={(e) => setSelectedClass(e.target.value)}
+                            className="p-2 border border-gray-300 rounded-md"
+                        >
+                            <option value="">Toutes les classes</option>
+                            {posts.map((post) => (
+                                <option key={post.id} value={post.name}>
+                                    {post.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
                     </div>
                     <Datagrid
                         columns={columns}
@@ -216,7 +226,7 @@ const useColumns = (props) => {
             {
                 accessorKey: "name",
                 cell: (info) => (
-                    <span className="text-yellow-300">{info.getValue()}</span>
+                    <div className="bg-gray p-1 rounded-md text-black">{info.getValue()}</div>
                 ),
                 header: () => "Nom du test",
             },
@@ -233,7 +243,7 @@ const useColumns = (props) => {
             {
                 accessorKey: "time",
                 cell: (info) => (
-                    <span className="bg-green-400 p-1 rounded-md text-white">
+                    <span className="bg-red-800 p-1 rounded-md text-white">
                         {info.getValue()}
                     </span>
                 ),
@@ -241,7 +251,17 @@ const useColumns = (props) => {
             },
             {
                 accessorKey: "post.name",
-                cell: (info) => `${info.getValue()}`,
+                cell: (info) => {
+                    const color = generateUniqueColor(info.getValue());
+                    return (
+                        <div
+                            className={`text-white text-center  rounded-md text-xs p-2`}
+                            style={{ backgroundColor: color }}
+                        >
+                            {info.getValue()}
+                        </div>
+                    );
+                },
                 header: () => "Classe",
             },
             {

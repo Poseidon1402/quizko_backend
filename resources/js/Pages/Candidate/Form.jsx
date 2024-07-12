@@ -7,8 +7,6 @@ import TextInput from "@/Components/TextInput";
 import {  useEffect } from "react";
 import { usePage } from "@inertiajs/react";
 import Select from "@/Components/Select";
-import SuccessButton from "@/Components/SuccessButton";
-
 
 export default function Form({
     mode = "creation",
@@ -105,11 +103,11 @@ export default function Form({
             <div className="mt-4">
                 <InputLabel htmlFor="gender" value="Sexe" />
 
-                    <div className="mt-1 text-white">
+                    <div className="mt-1 text-black">
                         <label className="inline-flex items-center">
                             <input
                                 type="radio"
-                                className="form-radio text-green-400"
+                                className="form-radio text-black"
                                 name="gender"
                                 value="masculine"
                                 checked={data.gender === "masculine"}
@@ -120,7 +118,7 @@ export default function Form({
                         <label className="inline-flex items-center ml-6">
                             <input
                                 type="radio"
-                                className="form-radio text-green-400"
+                                className="form-radio text-black"
                                 name="gender"
                                 value="feminine"
                                 checked={data.gender === "feminine"}
@@ -193,7 +191,6 @@ export default function Form({
                     />
                 </div>
             </fieldset>
-            {mode === "creation" && 
                     <fieldset className="grid grid-cols-1 md:grid-cols-2 gap-2">
                         <div className="mt-4">
                             <InputLabel htmlFor="password" value="Mot de passe" />
@@ -243,9 +240,7 @@ export default function Form({
                                 className="mt-2"
                             />
                         </div>
-                    </fieldset>
-        }
-                
+                    </fieldset>       
             <div className="flex items-center justify-end mt-4">
                 <SecondaryButton
                     data-testid="cancel-button"
@@ -256,14 +251,14 @@ export default function Form({
                     Annuler
                 </SecondaryButton>
 
-                <SuccessButton
+                <PrimaryButton
                     data-testid="submit-button"
                     className="ms-4"
                     type="submit"
                     disabled={processing}
                 >
                     {mode === "creation" ? "Créer" : "Sauvegarder"}
-                </SuccessButton>
+                </PrimaryButton>
             </div>
         </form>
     );

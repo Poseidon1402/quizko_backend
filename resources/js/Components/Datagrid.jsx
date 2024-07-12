@@ -17,10 +17,10 @@ import {
     getSortedRowModel,
     useReactTable,
 } from "@tanstack/react-table";
-import { ReactNode, useReducer, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Pagination from "./Pagination";
+import { Link } from "@inertiajs/react";
 import PrimaryButton from "./PrimaryButton";
-import SuccessButton from "./SuccessButton";
 
 export default function Datagrid({
     className,
@@ -30,16 +30,19 @@ export default function Datagrid({
     filter,
     actions,
     pagination = true,
-    minHeight = "350px", 
-    onCreate,
+    minHeight = "350px",
+    onCreate
 }) {
-    const rerender = useReducer(() => ({}), {})[1];
-
-    const [columnFilters, setColumnFilters] = useState([]);
     const [globalFilter, setGlobalFilter] = useState("");
+    const [columnFilters, setColumnFilters] = useState([]);
     const table = useReactTable({
         columns,
         data: rows,
+        state: {
+            columnFilters,
+            globalFilter,
+        },
+        onGlobalFilterChange: setGlobalFilter,
         onColumnFiltersChange: setColumnFilters,
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
@@ -48,12 +51,9 @@ export default function Datagrid({
         getFacetedRowModel: getFacetedRowModel(),
         getFacetedUniqueValues: getFacetedUniqueValues(),
         getFacetedMinMaxValues: getFacetedMinMaxValues(),
-        defaultColumn: {
-            minSize: 200,
-        },
         initialState: {
             pagination: {
-                pageSize: 5,
+                pageSize: 10,
             },
         },
     });
@@ -63,7 +63,7 @@ export default function Datagrid({
     const tableContainerRef = useRef(null);
 
     return (
-        <div className={`relative overflow-hidden bg-black shadow-md sm:rounded-lg ${className}`}>
+        <div className={`relative overflow-hidden bg-white text-graydark shadow-md sm:rounded-lg ${className}`}>
             {(canCreate || filter || actions) && (
                 <div className="flex flex-col items-center justify-between space-y-3 p-4 md:flex-row md:space-x-4 md:space-y-0">
                     {filter && (
@@ -74,35 +74,43 @@ export default function Datagrid({
                                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                                         <MagnifyingGlassIcon className="h-5 w-5 text-gray-500" />
                                     </div>
+                                    <input
+                                        type="text"
+                                        id="simple-search"
+                                        className="block w-full rounded-md border border-gray-300 pl-10 pr-3 py-2 text-sm placeholder-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                                        placeholder="Search..."
+                                        value={globalFilter ?? ""}
+                                        onChange={(e) => setGlobalFilter(e.target.value)}
+                                    />
                                 </div>
                             </form>
                         </div>
                     )}
                     <div className="flex w-full flex-shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
-                        {canCreate && (
-                            <SuccessButton
+                    {canCreate && (
+                            <PrimaryButton
                                 data-testid="add-button"
                                 type="button"
                                 onClick={onCreate}
                             >
                                 <PlusIcon className="mr-2 h-3.5 w-3.5" />
                                 Ajouter
-                            </SuccessButton>
+                            </PrimaryButton>
                         )}
                     </div>
                     {actions && <>{actions}</>}
                 </div>
             )}
             <div ref={tableContainerRef} className="relative w-full overflow-auto" style={{ minHeight: minHeight, maxHeight: "700px" }}>
-                <table className="w-full table-auto text-left text-sm text-gray-700">
-                    <thead className="sticky top-0 bg-gray-200">
+                <table className="w-full table-auto text-left text-sm text-black">
+                    <thead className="sticky top-0 bg-gray">
                         {table.getHeaderGroups().map((headerGroup) => (
                             <tr key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => (
                                     <th
                                         scope="col"
                                         key={header.id}
-                                        className="border-b border-gray-300 px-4 py-3"
+                                        className="border-b border-gray px-4 py-3"
                                     >
                                         {!header.isPlaceholder && (
                                             <div
@@ -112,7 +120,10 @@ export default function Datagrid({
                                                 }}
                                             >
                                                 {flexRender(header.column.columnDef.header, header.getContext())}{" "}
-                                                {{asc: (<ArrowLongUpIcon className="inline h-4 w-3" />), desc: (<ArrowLongDownIcon className="inline h-4 w-3" />),}[header.column.getIsSorted()] ?? null}
+                                                {{
+                                                    asc: (<ArrowLongUpIcon className="inline h-4 w-3" />),
+                                                    desc: (<ArrowLongDownIcon className="inline h-4 w-3" />),
+                                                }[header.column.getIsSorted()] ?? null}
                                             </div>
                                         )}
                                     </th>
@@ -122,9 +133,9 @@ export default function Datagrid({
                     </thead>
                     <tbody>
                         {_rows.map((row, rowIndex) => (
-                            <tr key={row.id} className={`${rowIndex % 2 === 0 ? "bg-gray-100" : "bg-black"} border-b border-gray-300`}>
+                            <tr key={row.id} className={`${rowIndex % 2 === 0 ? "bg-gray-100" : "bg-gray-200"} border-b border-gray`}>
                                 {row.getVisibleCells().map((cell) => (
-                                    <td key={cell.id} className="px-4 py-3">
+                                    <td key={cell.id} className="px-4 py-2">
                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                     </td>
                                 ))}

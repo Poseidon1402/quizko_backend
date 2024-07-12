@@ -31,11 +31,11 @@ export default function Login({ status, canResetPassword }) {
         <GuestLayout>
             <Head title="Connexion" />
 
-            {status && <div className="mb-4 font-medium text-sm text-green-600">{status}</div>}
+            {status && <div className="mb-4 font-medium text-s">{status}</div>}
 
-            <form onSubmit={submit}>
+            <form onSubmit={submit} className='text-black'>
                 <div>
-                    <InputLabel htmlFor="email" value="Email" />
+                    <InputLabel className=' text-white' htmlFor="email" value="Email" />
 
                     <TextInput
                         id="email"
@@ -52,7 +52,7 @@ export default function Login({ status, canResetPassword }) {
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Mot de passe" />
+                    <InputLabel className=' text-white' htmlFor="password" value="Mot de passe" />
 
                     <TextInput
                         id="password"
@@ -88,9 +88,9 @@ export default function Login({ status, canResetPassword }) {
                         </Link>
                     )}
 
-                    <SuccessButton type='submit' className="ms-4" disabled={processing}>
+                    <PrimaryButton type='submit' className="ms-4" disabled={processing}>
                         Connexion
-                    </SuccessButton>
+                    </PrimaryButton>
                 </div>
             </form>
         </GuestLayout>

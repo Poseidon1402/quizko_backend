@@ -3,6 +3,7 @@ import Datagrid from "@/Components/Datagrid";
 import { Link, Head } from "@inertiajs/react";
 import { useMemo, useState } from "react";
 import Breadcrumb from "@/Components/Breadcrumbs/Breadcrumb";
+import { generateUniqueColor } from "@/Utils/generateUniqueColor";
 
 export default function Index({ auth, interviews }) {
     const [searchTerm, setSearchTerm] = useState("");
@@ -16,8 +17,8 @@ export default function Index({ auth, interviews }) {
     return (
         <AuthenticatedLayout user={auth.user}>
             <Head title="Résultats" />
-            <Breadcrumb pageName="Résultats" />
-            <div className="py-12">
+            {/* <Breadcrumb pageName="Résultats" /> */}
+            <div className="">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="mb-4 flex justify-end">
                         <input
@@ -41,7 +42,7 @@ const useColumns = (searchTerm) => {
             {
                 accessorKey: "name",
                 cell: (info) => (
-                    <span className="text-yellow-300">{info.getValue()}</span>
+                    <div className="bg-gray p-1 rounded-md text-black">{info.getValue()}</div>
                 ),
                 header: () => "Nom du test",
             },
@@ -58,7 +59,7 @@ const useColumns = (searchTerm) => {
             {
                 accessorKey: "time",
                 cell: (info) => (
-                    <span className="bg-green-400 p-1 rounded-md text-white">
+                    <span className="bg-red-800 p-1 rounded-md text-white">
                         {info.getValue()}
                     </span>
                 ),
@@ -66,7 +67,17 @@ const useColumns = (searchTerm) => {
             },
             {
                 accessorKey: "post.name",
-                cell: (info) => `${info.getValue()}`,
+                cell: (info) => {
+                    const color = generateUniqueColor(info.getValue());
+                    return (
+                        <div
+                            className={`text-white text-center  rounded-md text-xs p-2`}
+                            style={{ backgroundColor: color }}
+                        >
+                            {info.getValue()}
+                        </div>
+                    );
+                },
                 header: () => "Classe",
             },
             {
@@ -94,7 +105,7 @@ const useColumns = (searchTerm) => {
                     <div className="flex space-x-2">
                         <Link
                             href={`/students-answers/${info.getValue().id}`}
-                            className="inline-flex items-center justify-center rounded-md bg-meta-3 py-2 px-5 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+                            className="inline-flex items-center justify-center rounded-full bg-black py-2 px-5 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
                         >
                             Voir
                         </Link>

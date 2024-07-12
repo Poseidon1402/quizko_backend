@@ -1,48 +1,62 @@
-
+import {  useForm } from "@inertiajs/react";
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
 import SecondaryButton from "@/Components/SecondaryButton";
 import TextInput from "@/Components/TextInput";
 import {  useEffect } from "react";
-import { usePage } from "@inertiajs/react";
 import Select from "@/Components/Select";
 
+export default function Edit({candidate, onCancel,posts }) {
+    const {
+        data,
+        setData,
+        put,
+        processing,
+        errors,
+        reset,
+        cancel,
+        hasErrors,
+        recentlySuccessful,
+    } = useForm({
+        id: candidate.id,
+        name: candidate.user.name,
+        registration_number: candidate.registration_number,
+        email: candidate.user.email,
+        user_id: candidate.user.id,
+        phone: candidate.user.phone,
+        address:candidate.user.address,
+        gender: candidate.gender,
+        post_id: candidate.post_id,
+        role: "candidate",
+        password: "",
+        password_confirmation: "",
+    });
+    const handleEditionSubmit = (e) => {
+        e.preventDefault();
+        const id=data.id;
+        put(route("students.update", id));
+        onCancel();
+    };
 
-export default function Form({
-    mode = "creation",
-    data,
-    setData,
-    errors,
-    processing,
-    onReset,
-    onSubmit,
-    onCancel,
-}) {
-    const {departments}= usePage().props;
-    useEffect(() => {
-        return () => {
-            onReset?.();
-        };
-    }, []);
     return (
-        <form className="p-5" onSubmit={onSubmit}>
+        <form className="p-5" onSubmit={handleEditionSubmit}>
          <fieldset className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 <div className="mt-4">
-                    <InputLabel htmlFor="name" value="Nom" />
+                    <InputLabel htmlFor="registration_number" value="Numero d'inscription" />
                     <TextInput
-                        data-testid="name-input"
-                        id="name"
-                        name="name"
-                        value={data.name}
+                        data-testid="registration_number-input"
+                        id="registration_number"
+                        name="registration_number"
+                        value={data.registration_number}
                         className="mt-1 block w-full"
-                        autoComplete="name"
-                        onChange={(e) => setData("name", e.target.value)}
+                        autoComplete="registration_number"
+                        onChange={(e) => setData("registration_number", e.target.value)}
                         isFocused={true}
                         required
                     />
 
-                    <InputError message={errors.name} className="mt-2" />
+                    <InputError message={errors.registration_number} className="mt-2" />
                 </div>
                 <div className="mt-4">
                 <InputLabel htmlFor="email" value="Email" />
@@ -62,26 +76,26 @@ export default function Form({
                 </div>
             </fieldset>
 
-            {/* <fieldset className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <fieldset className="">
 
                 <div className="mt-4 md:mt-0">
-                    <InputLabel htmlFor="last_name" value="Nom" />
+                    <InputLabel htmlFor="name" value="Nom" />
 
                     <TextInput
-                        data-testid="last_name-input"
-                        id="last_name"
-                        name="last_name"
-                        value={data.last_name}
+                        data-testid="name-input"
+                        id="name"
+                        name="name"
+                        value={data.name}
                         className="mt-1 block w-full"
-                        autoComplete="last_name"
-                        onChange={(e) => setData("last_name", e.target.value)}
+                        autoComplete="name"
+                        onChange={(e) => setData("name", e.target.value)}
                         required
                     />
 
-                    <InputError message={errors.last_name} className="mt-2" />
+                    <InputError message={errors.name} className="mt-2" />
                 </div>
 
-                <div className="mt-4 md:mt-0">
+                {/* <div className="mt-4 md:mt-0">
                     <InputLabel htmlFor="first_name" value="Prénom" />
 
                     <TextInput
@@ -96,45 +110,53 @@ export default function Form({
                     />
 
                     <InputError message={errors.first_name} className="mt-2" />
-                </div>
-            </fieldset> */}
+                </div> */}
+            </fieldset>
 
             <fieldset className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    <div className="mt-4">
-                        <InputLabel
-                            htmlFor="job_title"
-                            value="Titre de travail"
-                        />
+            <div className="mt-4">
+                <InputLabel htmlFor="gender" value="Sexe" />
 
-                        <TextInput
-                            data-testid="job_title-input"
-                            id="job_title"
-                            name="job_title"
-                            value={data.job_title}
-                            className="mt-1 block w-full"
-                            onChange={(e) =>
-                                setData("job_title", e.target.value)
-                            }
-                            required
-                        />
-
-                        <InputError
-                            message={errors.address}
-                            className="mt-2"
-                        />
+                    <div className="mt-1 text-black">
+                        <label className="inline-flex items-center">
+                            <input
+                                type="radio"
+                                className="form-radio text-black"
+                                name="gender"
+                                value="masculine"
+                                checked={data.gender === "masculine"}
+                                onChange={(e) => setData("gender", e.target.value)}
+                            />
+                            <span className="ml-2">Masculin</span>
+                        </label>
+                        <label className="inline-flex items-center ml-6">
+                            <input
+                                type="radio"
+                                className="form-radio text-black"
+                                name="gender"
+                                value="feminine"
+                                checked={data.gender === "feminine"}
+                                onChange={(e) => setData("gender", e.target.value)}
+                            />
+                            <span className="ml-2">Féminin</span>
+                        </label>
                     </div>
+
+                    <InputError message={errors.gender} className="mt-2" />
+            </div>
+
                     <div className="mt-4">
-                    <InputLabel htmlFor="department_id" value="Département" />
+                    <InputLabel htmlFor="post_id" value="Classe" />
                         <Select
-                        id="department_id"
-                        name="department_id"
-                        value={data.department_id}
+                        id="post_id"
+                        name="post_id"
+                        value={data.post_id}
                         className="mt-1 block w-full"
-                        onChange={(e) => setData("department_id", e.target.value)}
+                        onChange={(e) => setData("post_id", e.target.value)}
                         required
-                        options={departments.length>0 ?(departments.map((department) => ({
-                            value: department.id,
-                            label: department.name,
+                        options={posts.length>0 ?(posts.map((post) => ({
+                            value: post.id,
+                            label: post.name,
                         }))):([])}
                     />
 
@@ -142,7 +164,7 @@ export default function Form({
                     </div>
             </fieldset>
 
-            <fieldset className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <fieldset className="">
             <div className="mt-4">
                 <InputLabel htmlFor="phone" value="Numéro de téléphone" />
                      <TextInput
@@ -159,7 +181,7 @@ export default function Form({
                         <InputError message={errors.phone} className="mt-2" />  
             </div>
 
-                <div className="mt-4">
+                {/* <div className="mt-4">
                     <InputLabel
                         htmlFor="address"
                         value="Adresse"
@@ -181,12 +203,11 @@ export default function Form({
                         message={errors.address}
                         className="mt-2"
                     />
-                </div>
+                </div> */}
             </fieldset>
-            {mode === "creation" && 
                     <fieldset className="grid grid-cols-1 md:grid-cols-2 gap-2">
                         <div className="mt-4">
-                            <InputLabel htmlFor="password" value="Mot de passe" />
+                            <InputLabel htmlFor="password" value="Nouveau Mot de passe" />
 
                             <TextInput
                                 data-testid="password-input"
@@ -199,7 +220,6 @@ export default function Form({
                                 onChange={(e) =>
                                     setData("password", e.target.value)
                                 }
-                                required
                             />
 
                             <InputError
@@ -225,7 +245,6 @@ export default function Form({
                                 onChange={(e) =>
                                     setData("password_confirmation", e.target.value)
                                 }
-                                required
                             />
 
                             <InputError
@@ -233,9 +252,7 @@ export default function Form({
                                 className="mt-2"
                             />
                         </div>
-                    </fieldset>
-        }
-                
+                    </fieldset>       
             <div className="flex items-center justify-end mt-4">
                 <SecondaryButton
                     data-testid="cancel-button"
@@ -252,7 +269,7 @@ export default function Form({
                     type="submit"
                     disabled={processing}
                 >
-                    {mode === "creation" ? "Créer" : "Sauvegarder"}
+                   Sauvegarder
                 </PrimaryButton>
             </div>
         </form>

@@ -9,6 +9,7 @@ import { useEffect, useMemo, useState } from "react";
 import DeletionConfirmation from "@/Components/DeletionConfirmation";
 import ActionButtons from "@/Components/ActionButtons";
 import Breadcrumb from "@/Components/Breadcrumbs/Breadcrumb";
+import { generateUniqueColor } from "@/Utils/generateUniqueColor";
 
 
 export default function Index({ auth, departments}) {
@@ -82,8 +83,8 @@ export default function Index({ auth, departments}) {
             user={auth.user}
         >
             <Head title="Département" />
-            <Breadcrumb pageName="Départements" />
-            <div className="py-12">
+            {/* <Breadcrumb pageName="Départements" /> */}
+            <div className="">
                    <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                         <Datagrid
                             columns={columns}
@@ -188,9 +189,18 @@ const useColumns = (
         return [
             {
                 accessorKey: "name",
-                cell: (info) =>
-                    `${(info.getValue())}`,
-                header: () => "Département",
+                cell: (info) => {
+                    const color = generateUniqueColor(info.getValue());
+                    return (
+                        <span
+                            className={`text-white rounded-md text-xs p-2`}
+                            style={{ backgroundColor: color }}
+                        >
+                            {info.getValue()}
+                        </span>
+                    );
+                },
+                header: () => "Départements",
             },
             {
                 accessorKey: "recruiters",

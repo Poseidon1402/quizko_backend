@@ -55,17 +55,17 @@ export default function Modal({
                     leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                 >
                     <Dialog.Panel
-                        className={`mb-6 p-5 bg-black  rounded-lg overflow-hidden shadow-xl transform transition-all sm:w-full sm:mx-auto ${maxWidthClass}`}
+                        className={`mb-6 p-5 bg-white  rounded-lg overflow-hidden shadow-xl transform transition-all sm:w-full sm:mx-auto ${maxWidthClass}`}
                     >
                         {title && (
                             <div className="flex justify-between items-center px-5 py-4 rounded-t border-b light:border-gray-600">
-                                <h3 className="text-xl font-bold text-white ">
+                                <h3 className="text-xl font-bold text-black ">
                                     {title}
                                 </h3>
                                 {closeable && (
                                     <button
                                         type="button"
-                                        className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-full text-sm p-1.5 ml-auto inline-flex items-center light:hover:bg-gray-600  light:hover:text-white"
+                                        className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-full text-sm p-1.5 ml-auto inline-flex items-center light:hover:bg-gray-600  light:hover:text-black"
                                         data-modal-toggle="defaultModal"
                                         onClick={() => onClose()}
                                     >

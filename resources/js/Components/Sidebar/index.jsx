@@ -11,10 +11,14 @@ import {
   AcademicCapIcon,
   BookOpenIcon,
 } from "@heroicons/react/20/solid";
+import LogoutConfirmation from '../LogoutConfirmation';
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const { pathname } = "";
-
+  const [confirmingUserLogout, setConfirmingUserLogout] = useState(false);
+  const confirmUserDeletion = () => {
+    setConfirmingUserLogout(true);
+};
   const trigger = useRef(null);
   const sidebar = useRef(null);
 
@@ -111,7 +115,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                   href={route("dashboard")}
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                     route().current("dashboard") &&
-                    'bg-meta-3'
+                    'bg-graydark'
                   }`}
                 >
                  <ChartPieIcon className="w-6 h-6 transition duration-75 group-hover:text-white" />
@@ -123,7 +127,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                   href={route("departments.index")}
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                     route().current("departments.index") &&
-                    'bg-meta-3'
+                    'bg-graydark'
                   }`}
                 >
                   <BuildingOfficeIcon className="w-6 h-6 transition duration-75 group-hover:text-white" />
@@ -135,7 +139,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                   href={route("professors.index")}
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                     route().current("professors.index") &&
-                    'bg-meta-3'
+                    'bg-graydark'
                   }`}
                 >
                   <UsersIcon className="w-6 h-6 transition duration-75 group-hover:text-white" />
@@ -147,7 +151,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                   href={route("levels.index")}
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                    ( route().current("levels.index") ||  route().current("levels.show") )&&
-                    'bg-meta-3'
+                    'bg-graydark'
                   }`}
                 >
                   <AcademicCapIcon className="w-6 h-6 transition duration-75 group-hover:text-white" />
@@ -159,7 +163,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                   href={route("students.index")}
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                     route().current("students.index") &&
-                    'bg-meta-3'
+                    'bg-graydark'
                   }`}
                 >
                 <UserGroupIcon className="w-6 h-6 transition duration-75 group-hover:text-white" />
@@ -171,7 +175,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                   href={route("questions.index")}
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                     route().current("questions.index") &&
-                    'bg-meta-3'
+                    'bg-graydark'
                   }`}
                 >
                   <QuestionMarkCircleIcon className="w-6 h-6 transition duration-75 group-hover:text-white" />
@@ -182,8 +186,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                 <Link
                   href={route("subjects.index")}
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                   (route().current("subjects.index") || route().current("subjects.create")) &&
-                    'bg-meta-3'
+                    ( route().current("subjects.create") || route().current("subjects.index")) &&
+                    'bg-graydark'
                   }`}
                 >
                   <BookOpenIcon className="w-6 h-6 transition duration-75 group-hover:text-white" />
@@ -202,8 +206,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                       <Link
                          href={route("tests.index")}
                         className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                         ( route().current("student_answers.index") || route().current("tests.index") ||  route().current("results.index") ) &&
-                         'bg-meta-3'
+                         ( route().current("student_answers.index") || route().current("tests.index") ||  route().current("results.index")  ||  route().current("student_answers.studentTestAnswers"))  &&
+                         'bg-graydark'
                         }`}
                         onClick={(e) => {
                           e.preventDefault();
@@ -294,11 +298,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
               </SidebarLinkGroup>
     
               <li>
-                <Link
-                  method="post"
-                   as="button"
-                   href={route("logout")}
-                    className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
+                <button
+                onClick={confirmUserDeletion}
+                //   method="post"
+                //    as="button"
+                //    href={route("logout")}
+                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
+                // 
                 >
                   <svg
                           className="fill-current"
@@ -330,13 +336,21 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                           </defs>
                         </svg>
                  Déconnexion
-                </Link>
+                </button>
               </li>
             </ul>
           </div>
         </nav>
     
       </div>
+        <LogoutConfirmation
+                           confirmingLogout={confirmingUserLogout}
+                            closeModal={() => {
+                              
+                                setConfirmingUserLogout(false);
+                            }}
+            
+                  /> 
     </aside>
   );
 };

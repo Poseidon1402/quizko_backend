@@ -11,7 +11,7 @@ class QuestionController extends Controller
 {
     public function index()
     {
-        $questions = Question::with('answers')->get();
+        $questions = Question::with('answers')->orderByDesc("created_at")->get();
         return Inertia::render('QuestionAnswer/Index', [
             'questions' => $questions,
         ]);

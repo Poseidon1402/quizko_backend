@@ -3,7 +3,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 
 const Pagination = ({
     pageCount,
-    pageRangeDisplayed = 5, 
+    pageRangeDisplayed = 10, 
     onClick,
     currentPage,
 }) => {
@@ -34,7 +34,7 @@ const Pagination = ({
                 <button
                     key={index}
                     onClick={() => onClick({ index: page - 1 })}
-                    className={`p-2 ${currentPage === page - 1 ? "bg-primary-600 text-white font-bold rounded-full" : "text-gray-700 hover:bg-primary-700 hover:text-white rounded-full"}`}
+                    className={`p-2 ${currentPage === page - 1 ? "bg-primary-600 text-graydark font-bold rounded-full" : "text-gray-700 hover:bg-primary-700 hover:text-white rounded-full"}`}
                 >
                     {page}
                 </button>

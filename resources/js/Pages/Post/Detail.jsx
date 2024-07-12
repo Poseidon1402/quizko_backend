@@ -9,6 +9,8 @@ import Avatar from "@/Components/Avatar";
 import ImportExcel from "../Candidate/ImportExcel";
 import { Transition } from "@headlessui/react";
 import Breadcrumb from "@/Components/Breadcrumbs/Breadcrumb";
+import { generateUniqueColor } from "@/Utils/generateUniqueColor";
+import Chip from "@/Components/Chip";
 
 export default function Index({ auth, post }) {
     const [showCreationModal, setShowCreationModal] = useState(false);
@@ -89,14 +91,14 @@ export default function Index({ auth, post }) {
             user={auth.user}
         >
             <Head title="Classes" />
-            <Breadcrumb pageName="Classes" />
+            {/* <Breadcrumb pageName="Classes" /> */}
             <Link
                 className="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150"
                 href="/levels"
             >
                 Retour
             </Link>
-            <div className="py-12">
+            <div className="">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="mb-4">
                         <input
@@ -152,7 +154,8 @@ const useColumns = (props) => {
         return [
             {
                 accessorKey: "registration_number",
-                cell: (info) =>(<span className="bg-blue-600 p-2 rounded-md text-white">{info.getValue()}</span>),  
+                cell: (info) =>
+                (<span className="bg-gray p-2 rounded-md text-black">{info.getValue()}</span>),  
                 header: () => "Matricule",
             },
             {
@@ -164,7 +167,9 @@ const useColumns = (props) => {
                         <div className="flex items-center gap-2">
                             <Avatar size="lg" src="" alt={name} />
                             <div className="space-y-2">
-                                <h2 className="text-[16px] font-semibold">{name}</h2>
+                                <h2 className="text-[16px] font-semibold">
+                                    {name}
+                                </h2>
                                 <div className="flex items-center gap-4">
                                     <span className="flex items-center gap-1 text-xs font-thin italic">
                                         <EnvelopeIcon className="w-3 h-3" />
@@ -181,18 +186,47 @@ const useColumns = (props) => {
                         </div>
                     );
                 },
-                header: () => "Etudiant",
+                header: () => "Candidat",
             },
             {
                 accessorKey: "gender",
                 cell: (info) => (
-                    <span className={`px-2 py-1 rounded-md ${
-                        info.getValue() === 'masculine' ? 'bg-blue-100 text-blue-800' : 'bg-pink-100 text-pink-800'
-                    }`}>
-                       {info.getValue() === 'masculine' ? 'Masculin' : 'Féminin'}
-                    </span>
-                ),
+                   <Chip type={info.getValue()==='feminine' ? "success" : "error"}>
+                        {info.getValue()==='feminine' ? "Féminin" : "Masculin"}
+                    </Chip>
+                  ),
                 header: () => "Genre",
+            },
+           
+            {
+                accessorFn: (row) => row,
+                id: "id",
+                cell: (info) => (
+                    <div className="flex space-x-1">
+                        <button
+                            className={
+                                "p-1 border border-transparent rounded-md"
+                            }
+                            onClick={() =>{ 
+                                props.onEdit(info.getValue());
+                             }}
+                        >
+                          <PencilIcon className="w-5 h-5 text-green-600" /> 
+                        
+                        </button>
+                        <button
+                           className={
+                            "p-1 border border-transparent rounded-md"
+                            }
+                          onClick={() => {
+                                props.onDelete(info.getValue());
+                            }}
+                        >
+                            <TrashIcon className="w-4 h-4 text-red-600" />
+                        </button>
+                    </div>
+                ),
+                header: () => "Action",
             },
         ];
     }, [props]);

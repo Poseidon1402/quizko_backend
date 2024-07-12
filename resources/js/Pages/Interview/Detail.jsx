@@ -9,6 +9,7 @@ import SecondaryButton from "@/Components/SecondaryButton";
 import { CSVLink } from 'react-csv';
 import Breadcrumb from "@/Components/Breadcrumbs/Breadcrumb";
 import SuccessButton from "@/Components/SuccessButton";
+import Chip from "@/Components/Chip";
 
 export default function Detail({ auth, candidate_answers, interview }) {
     const [showModal, setShowModal] = useState(false);
@@ -73,12 +74,10 @@ export default function Detail({ auth, candidate_answers, interview }) {
             }
         >
             <Head title="Résultats" />
-            <Breadcrumb pageName={"Résultat du text "+interview[0]?.name+"/classe : "+interview[0]?.post?.name}/>
+            {/* <Breadcrumb pageName={"Résultat du text "+interview[0]?.name+"/classe : "+interview[0]?.post?.name}/> */}
                      <Link
                          href={`/results`}
-                         className={
-                            "inline-flex items-center justify-center rounded-md bg-meta-3 py-2 px-5 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10 " 
-                            }           
+                         className="inline-flex items-center justify-center rounded-full bg-black py-2 px-5 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"          
                     >
                         Retour
                     </Link>
@@ -86,7 +85,7 @@ export default function Detail({ auth, candidate_answers, interview }) {
                 <CSVLink
                     data={excelResult}
                     filename={filename}
-                    className="inline-flex items-center justify-center rounded-md bg-primary py-2 px-5 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+                    className="inline-flex items-center justify-center rounded-md bg-green-800 py-2 px-5 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
                     >
                     Exporter en Excel
                 </CSVLink>
@@ -116,11 +115,13 @@ export default function Detail({ auth, candidate_answers, interview }) {
                     title={"Réponses de l'étudiant " + selectedCandidate.candidate.name + " :"}
                     onClose={() => setShowModal(false)}
                 >
-                    <div className="space-y-2 text-white overflow-y-auto max-h-80">
+                    <div className="space-y-2 text-black overflow-y-auto max-h-80">
                         {selectedCandidate.answers.length > 0 ? (
                             selectedCandidate.answers.map(answer => (
-                                <div key={answer.id} className="border-b border-gray-200 pb-4">
-                                    <h1 className="text-lg font-semibold">{answer.question} ({answer.question_point} point(s))</h1>
+                                <div key={answer.id} className="border-b  border-gray-200 pb-4">
+                                     <div key={answer.id} className="bg-black rounded-md  text-white">
+                                         <h1 className="text-lg font-semibold">{answer.question} ({answer.question_point} point(s))</h1>
+                                    </div>   
                                     {answer.answer_of_candidate === null ? (
                                         <>
                                             <p className="text-sm text-gray-600">
@@ -147,8 +148,8 @@ export default function Detail({ auth, candidate_answers, interview }) {
                     </div>
                     <form onSubmit={handleEditionSubmit} className="shadow-lg p-2">
                         <div className="flex justify-between items-center m-4">
-                            <div className="text-white"> Note provisoire : {selectedCandidate.note.interim_note}</div>
-                            <div className="text-white"> Note : {selectedCandidate.note.note === null ? (<span className="text-red-400">En attente</span>) : selectedCandidate.note.note}</div>
+                            <div className="text-black"> Note provisoire : {selectedCandidate.note.interim_note}</div>
+                            <div className="text-black"> Note : {selectedCandidate.note.note === null ? (<span className="text-red-400">En attente</span>) : selectedCandidate.note.note}</div>
                             <div className="flex items-center">
                                 <input
                                     value={data.note}
@@ -167,12 +168,12 @@ export default function Detail({ auth, candidate_answers, interview }) {
                             >
                                 Annuler
                             </SecondaryButton>
-                            <SuccessButton
+                            <PrimaryButton
                                 className="ms-4 text-sm"
                                 type="submit"
                             >
                                 Valider
-                            </SuccessButton>
+                            </PrimaryButton>
                         </div>
                     </form>
                 </Modal>
@@ -187,7 +188,7 @@ const useColumns = (props) => {
             {
                 accessorKey: "candidate.matricule",
                 cell: (info) =>
-                (<span className="bg-blue-600 p-2 rounded-md text-white">{info.getValue()}</span>),  
+                (<span className="bg-black p-2 rounded-md text-white">{info.getValue()}</span>),  
                 header: () => "Matricule",
             },
             {
@@ -199,7 +200,7 @@ const useColumns = (props) => {
              {
                 accessorKey: "note",
                 cell: (info) => (
-                    <span className={`px-2 py-1 rounded-md bg-yellow-400 text-md text-yellow-900 `}>
+                    <span className={`px-2 py-1 rounded-md bg-green-800 text-md text-white `}>
                         {
                             `${info.getValue()?.interim_note}`
                         }
@@ -210,14 +211,12 @@ const useColumns = (props) => {
             {
                 accessorKey: "note",
                 cell: (info) => (
-                    <span className={`px-2 py-1 rounded-md ${
-                        info.getValue()?.note === null ? 'bg-yellow-100 text-yellow-900 text-xs ' : 'bg-red-500 text-md text-white'
-                    }`}>
-                        {info.getValue()?.note === null ? 
+                    <Chip type={info.getValue()?.note === null  ? "success" : "error"}>
+                       {info.getValue()?.note === null ? 
                             `En attente` : 
                             `${info.getValue()?.note}`
                         }
-                    </span>
+                    </Chip>
                 ),
                 header: () => "Note",
             },
@@ -226,14 +225,12 @@ const useColumns = (props) => {
                 id: "id",
                 cell: (info) => (
                     <div className="flex space-x-2">
-                        <SuccessButton
-                            onClick={() => {
-                                props.onView(info.getValue());
-                            }}
-                        className="inline-flex items-center justify-center rounded-md py-2 px-2 text-center font-medium text-white hover:bg-opacity-90 lg:px-2 xl:px-3"
+                        <Link
+                        href={route("student_answers.studentTestAnswers",[info.getValue().candidate.id,info.getValue().note.interview_id])}
+                        className=" bg-orange-800 inline-flex items-center justify-center rounded-md py-2 px-2 text-center font-medium text-white hover:bg-opacity-90 lg:px-2 xl:px-3"
                         >
                            <EyeIcon className="w-5 h-5" />
-                        </SuccessButton>
+                        </Link>
                     </div>
                 ),
                 header: () => "Action",

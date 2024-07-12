@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\UserController;
 use Inertia\Inertia;
 use App\Imports\CandidateImport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Hash;
 class CandidateController extends Controller
 {
     /**
@@ -86,23 +87,38 @@ class CandidateController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $candidate = Candidate::findOrFail($id);
+        $user = User::findOrFail($candidate->user_id);
+    
         $request->validate([
             'post_id' => 'required|exists:posts,id',
-            'status' => 'required|in:admitted,pending,failed',
             'gender' => 'required|in:masculine,feminine',
+            'name' => 'required|string|max:255',
+            'registration_number' => 'required|string|max:255|unique:candidates,registration_number,' . $candidate->id,
+            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            'phone' => 'required|string|max:20',
+            'password' => 'nullable|string|min:8|confirmed', 
         ]);
-
-        $candidate = Candidate::find($id);
-        if (!$candidate) {
-            return response()->json(['message' => 'Candidate not found'], 404);
+    
+        // Update Candidate
+        $candidate->update([
+            'post_id' => $request->input('post_id'),
+            'registration_number' => $request->input('registration_number'),
+            'gender' => $request->input('gender'),
+        ]);
+    
+        // Update User
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        $user->phone = $request->input('phone');
+    
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->input('password'));
         }
-
-        $candidate->post_id = $request->input('post_id');
-        $candidate->status = $request->input('status');
-        $candidate->gender = $request->input('gender');
-        $candidate->save();
-
-        return response()->json($candidate);
+    
+        $user->save();
+    
+       return redirect(route('students.index')); 
     }
     /**
      * Remove the specified resource from storage.

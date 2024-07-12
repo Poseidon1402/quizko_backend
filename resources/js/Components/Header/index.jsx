@@ -6,7 +6,7 @@ import DarkModeSwitcher from './DarkModeSwitcher';
 
 const Header = (props) => {
   return (
-    <header className="sticky top-0 z-[999] flex w-full bg-white drop-shadow-1 dark:bg-boxdark dark:drop-shadow-none">
+    <header className="sticky top-0 z-[999] flex w-full bg-white drop-shadow-1 text-black">
       <div className="flex flex-grow items-center justify-between px-4 py-4 shadow-2 md:px-6 2xl:px-11">
         <div className="flex items-center gap-2 sm:gap-4 lg:hidden">
           {/* Hamburger Toggle BTN */}
@@ -16,7 +16,7 @@ const Header = (props) => {
               e.stopPropagation();
               props.setSidebarOpen(!props.sidebarOpen);
             }}
-            className="z-[99999] block rounded-sm border border-stroke bg-white p-1.5 shadow-sm dark:border-strokedark dark:bg-boxdark lg:hidden"
+            className="z-[99999] block rounded-sm border border-stroke bg-white p-1.5 shadow-sm lg:hidden"
           >
             <span className="relative block h-[5.5px] w-[5.5px] cursor-pointer">
               <span className="du-block absolute right-0 h-full w-full">

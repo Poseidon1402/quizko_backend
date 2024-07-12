@@ -1,8 +1,8 @@
 
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
+import PrimaryButton from "@/Components/PrimaryButton";
 import SecondaryButton from "@/Components/SecondaryButton";
-import SuccessButton from "@/Components/SuccessButton";
 import TextInput from "@/Components/TextInput";
 import {  useEffect } from "react";
 
@@ -74,13 +74,13 @@ export default function Form({
                     Annuler
                 </SecondaryButton>
 
-                <SuccessButton
+                <PrimaryButton
                     className="ms-4"
                     type="submit"
                     disabled={processing}
                 >
                  {mode==="creation"? "Créer" : "Modifier"}
-                </SuccessButton>
+                </PrimaryButton>
             </div>
         </form>
     );
