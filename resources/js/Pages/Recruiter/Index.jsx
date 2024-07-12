@@ -13,6 +13,7 @@ import Avatar from "@/Components/Avatar";
 import { Transition } from "@headlessui/react";
 import DeletionConfirmation from "@/Components/DeletionConfirmation";
 import Breadcrumb from "@/Components/Breadcrumbs/Breadcrumb";
+import { generateUniqueColor } from "@/Utils/generateUniqueColor";
 
 export default function Index({ auth, recruiters, departments}) {
 
@@ -96,7 +97,7 @@ export default function Index({ auth, recruiters, departments}) {
             user={auth.user}
         >
             <Head title="Enseignant" />
-            <Breadcrumb pageName="Enseignant" />
+            {/* <Breadcrumb pageName="Enseignant" /> */}
             <div className="py-12">
                    <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                         <Datagrid
@@ -209,8 +210,17 @@ const useColumns = (
             },
             {
                 accessorKey: "department.name",
-                cell: (info) =>
-                    `${(info.getValue())}`,
+                cell: (info) => {
+                    const color = generateUniqueColor(info.getValue());
+                    return (
+                        <span
+                            className={`text-white rounded-md text-xs p-2`}
+                            style={{ backgroundColor: color }}
+                        >
+                            {info.getValue()}
+                        </span>
+                    );
+                },
                 header: () => "Département",
             },
             {

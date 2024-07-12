@@ -8,6 +8,7 @@ import { Head, Link, useForm } from "@inertiajs/react";
 import { useEffect, useMemo, useState } from "react";
 import DeletionConfirmation from "@/Components/DeletionConfirmation";
 import Breadcrumb from "@/Components/Breadcrumbs/Breadcrumb";
+import { generateUniqueColor } from "@/Utils/generateUniqueColor";
 
 
 export default function Index({ auth, posts}) {
@@ -82,8 +83,8 @@ export default function Index({ auth, posts}) {
             user={auth.user}
         >
             <Head title="Classes" />
-            <Breadcrumb pageName="Classes" />
-            <div className="py-12">
+            {/* <Breadcrumb pageName="Classes" /> */}
+            <div className="">
                    <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                         <Datagrid
                             columns={columns}
@@ -188,9 +189,18 @@ const useColumns = (
         return [
             {
                 accessorKey: "name",
-                cell: (info) =>
-                (<span className="bg-blue-600 p-2 rounded-md text-white">{info.getValue()}</span>),  
-                header: () => "Classe",
+                cell: (info) => {
+                    const color = generateUniqueColor(info.getValue());
+                    return (
+                        <span
+                            className={`text-white rounded-md text-xs p-2`}
+                            style={{ backgroundColor: color }}
+                        >
+                            {info.getValue()}
+                        </span>
+                    );
+                },
+                header: () => "Nom",
             },
             {
                 accessorKey: "candidates",

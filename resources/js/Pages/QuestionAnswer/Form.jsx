@@ -171,8 +171,8 @@
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
+import SecondaryButton from "@/Components/SecondaryButton";
 import Select from "@/Components/Select";
-import SuccessButton from "@/Components/SuccessButton";
 import TextInput from "@/Components/TextInput";
 import React, { useState, useEffect } from "react";
 
@@ -218,7 +218,7 @@ export default function Form({
         <form className="" onSubmit={onSubmit}>
 
             <field className="gap-2">
-            <div className="p-6 max-w-xl mx-auto bg-black rounded-lg shadow-md">
+            <div className="p-6 max-w-xl mx-auto bg-white rounded-lg shadow-md">
                     <fieldset className="gap-2">
                         <div>
                             <InputLabel htmlFor="question" value="Question" />
@@ -270,7 +270,7 @@ export default function Form({
                                 value={data.type}
                                 onChange={(e) => setData('type',e.target.value)}
                                 options={[
-                                    { value: "open", label: "Question avec réponse attendue" },
+                                    { value: "open", label: "Question ouverte" },
                                     { value: "qcm", label: "QCM" },
                                 ]}
                             />
@@ -294,18 +294,18 @@ export default function Form({
                                 onChange={handleCheckboxChange(index)}
                                 className=" rounded border-gray-300 shadow-sm focus:border-blue-400 focus:ring focus:ring-blue-200"
                                 />
-                                <span className="text-lg text-white">Correct</span>
+                                <span className="text-lg text-black">Correct</span>
                             </label>
                             </div>
                         ))}
                      {data.type === "qcm" && (
                          <div className="flex items-center space-x-2">
-                            <SuccessButton
+                            <PrimaryButton
                             type="button"
                             onClick={handleAddAnswer}
                             >
                             +
-                            </SuccessButton>
+                            </PrimaryButton>
                         </div>)}
                         </>}
                         </div>
@@ -313,21 +313,20 @@ export default function Form({
                     </div>
             </field>
             <div className="flex items-center justify-end mt-4">
-            <SuccessButton
-                className="block w-full mt-6 px-4 py-2 text-center rounded-md shadow-md "
-                type="submit"
-                disabled={processing}          
-            >
-                       {mode==="creation"? "Créer" : "Modifier"}
-             </SuccessButton>
-
-                {/* <SecondaryButton
-                    className="ms-4"
-                    onClick={onCancel}
-                    disabled={processing}
+                  <SecondaryButton
+                        className="ms-4"
+                        onClick={onCancel}
+                        disabled={processing}
+                    >
+                        Annuler
+                    </SecondaryButton>
+                <PrimaryButton
+                    type="submit"
+                    disabled={processing}          
                 >
-                    Annuler
-                </SecondaryButton> */}
+                        {mode==="creation"? "Créer" : "Modifier"}
+                </PrimaryButton>
+
             </div>
         </form>
     );

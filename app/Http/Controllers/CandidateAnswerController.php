@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Answer;
+use App\Models\Candidate;
 use App\Models\CandidateAnswer;
 use App\Models\CandidateNote;
 use App\Models\Interview;
 use Inertia\Inertia;
 use App\Http\Controllers\TextSimilarityController;
-
+use Illuminate\Support\Facades\Auth;
 class CandidateAnswerController extends Controller
 {
     /**
@@ -60,38 +61,45 @@ class CandidateAnswerController extends Controller
         
         public function candidateInterviewAnswers($candidate_id, $interview_id)
         {
-       
+            $user=Auth::user();
             $candidateAnswers = CandidateAnswer::with(['answer.question.answers'])
-                ->where('candidate_id', $candidate_id)
-                ->where('interview_id', $interview_id)
-                ->get();
-        
-            $note = CandidateNote::where('interview_id', $interview_id)
-                ->where('candidate_id', $candidate_id)
-                ->first();
-        
-            $data = $candidateAnswers->map(function ($candidateAnswer) {
-                $questionAnswers = $candidateAnswer->answer->question->answers->map(function ($answer) use ($candidateAnswer) {
-                    return [
-                        'answer' => $answer->answer,
-                        'is_correct' => $answer->is_correct,
-                        'is_candidate_answer' => $candidateAnswer->answer_id == $answer->id,
-                        'candidate_answer' => $candidateAnswer->answer_of_candidate,
-                    ];
-                });
-        
-    
+            ->where('candidate_id', $candidate_id)
+            ->where('interview_id', $interview_id)
+            ->get();
+            $candidate = Candidate::where('id', $candidate_id)->with('user')->first();
+             $note = CandidateNote::where('interview_id', $interview_id)
+            ->where('candidate_id', $candidate_id)
+            ->first();
+        $data = $candidateAnswers->map(function ($candidateAnswer) {
+            $questionAnswers = $candidateAnswer->answer->question->answers->map(function ($answer) use ($candidateAnswer) {
                 return [
-                    'question' => $candidateAnswer->answer->question->question,
-                    'question_type' => $candidateAnswer->answer->question->type,
-                    'answers' => $questionAnswers,
+                    'answer' => $answer->answer,
+                    'is_correct' => $answer->is_correct,
+                    'is_candidate_answer' => $candidateAnswer->answer_id == $answer->id,
+                    'candidate_answer' => $candidateAnswer->answer_of_candidate,
                 ];
             });
-  
-            return response()->json([
-                'data' => $data,
-                'note' => $note,
-            ]);
+    
+
+            return [
+                'question' => $candidateAnswer->answer->question->question,
+                'point' => $candidateAnswer->answer->question->point,
+                'question_type' => $candidateAnswer->answer->question->type,
+                'answers' => $questionAnswers,
+            ];
+         });
+            if( $user &&( $user->role==="admin"||$user->role=="recruiter")){
+                return Inertia::render('Result/Detail', [
+                    'questions' => $data,
+                    'note' => $note,
+                    'candidate' => $candidate,
+                ]);
+            }else{
+                return response()->json([
+                    'data' => $data,
+                    'note' => $note,
+                ]);
+            }
         }
         
         

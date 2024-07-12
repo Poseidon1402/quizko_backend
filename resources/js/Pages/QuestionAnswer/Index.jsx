@@ -3,15 +3,13 @@ import Datagrid from "@/Components/Datagrid";
 import Modal from "@/Components/Modal";
 import { PencilIcon, EyeIcon, TrashIcon, CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import Form from "./Form";
-import { Transition } from "@headlessui/react";
-import { Head, Link, useForm } from "@inertiajs/react";
+import { Head, useForm } from "@inertiajs/react";
 import { useEffect, useMemo, useState } from "react";
 import SecondaryButton from "@/Components/SecondaryButton";
 import DeletionConfirmation from "@/Components/DeletionConfirmation";
 import PrimaryButton from "@/Components/PrimaryButton";
-import Breadcrumb from "@/Components/Breadcrumbs/Breadcrumb";
-import SuccessButton from "@/Components/SuccessButton";
-
+import Chip from "@/Components/Chip";
+import { truncateText } from "@/Utils/truncateText";
 export default function Index({ auth, questions }) {
     const [showCreationModal, setShowCreationModal] = useState(false);
     const [showDeletionModal, setShowDeletionModal] = useState(false);
@@ -96,10 +94,10 @@ export default function Index({ auth, questions }) {
             user={auth.user}
         >
             <Head title="Questions & Réponses" />
-            <Breadcrumb pageName="Questions & Réponses" />
-            <div className="py-12">
+            {/* <Breadcrumb pageName="Questions & Réponses" /> */}
+            <div className="bg-white py-1">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="mb-4 flex justify-between items-center space-x-4">
+                    <div className="mb-4 flex justify-between items-center space-x-4 text-black">
                         <div className="flex items-center space-x-4">
                             <label className="font-semibold">Filtrer par :</label>
                             <input
@@ -112,16 +110,16 @@ export default function Index({ auth, questions }) {
                             <select
                                 value={selectedType}
                                 onChange={(e) => setSelectedType(e.target.value)}
-                                className="p-2 border border-gray-300 rounded-md"
+                                className="p-2 border border-gray-300 rounded-md text-black"
                             >
                                 <option value="">Tous les types</option>
                                 <option value="open">Question avec réponse attendue</option>
                                 <option value="qcm">QCM</option>
                             </select>
                         </div>
-                        <SuccessButton onClick={() => setShowCreationModal(true)}>
+                        <PrimaryButton onClick={() => setShowCreationModal(true)}>
                             Ajouter une question
-                        </SuccessButton>
+                        </PrimaryButton>
                     </div>
                     <Datagrid
                         columns={columns}
@@ -202,7 +200,7 @@ export default function Index({ auth, questions }) {
                 title="Réponse(s) d'une question"
                 onClose={() => setShowAnswersModal(false)}
             >
-                <div className="p-4 m-5 text-white">
+                <div className="p-4 m-5 text-black">
                     <h1 className="text-xl font-semibold mb-2">{selectedData?.question}:</h1>
                     <h2 className="text-lg mb-4">Points : {selectedData?.point}</h2>
                     <ul>
@@ -221,10 +219,10 @@ export default function Index({ auth, questions }) {
                             ))}
                     </ul>
                 </div>
-                <div className="flex items-center border-t p-2 dark:border-gray-600 justify-center m-4">
-                    <SecondaryButton className="mx-4" onClick={() => setShowAnswersModal(false)}>
+                <div className="flex items-center border-t p-2 justify-center m-4">
+                    <PrimaryButton className="mx-4" onClick={() => setShowAnswersModal(false)}>
                         Ok
-                    </SecondaryButton>
+                    </PrimaryButton>
                 </div>
             </Modal>
         </AuthenticatedLayout>
@@ -236,7 +234,7 @@ const useColumns = (props) => {
         return [
             {
                 accessorKey: "question",
-                cell: (info) =>(<span className="text-yellow-200">{info.getValue()}</span>),
+                cell: (info) =>(<div className="text-black bg-blue-200 rounded-md p-2">{truncateText(info.getValue(),40)}</div>),
                 header: () => "Question",
             },
             {
@@ -246,19 +244,17 @@ const useColumns = (props) => {
             },
             {
                 accessorKey: "point",
-                cell: (info) =>(<span className="bg-red-800 text-white rounded-lg p-2">{info.getValue()}</span>),
+                cell: (info) =>(<span className="text-white bg-brown-500 px-2 py-1 rounded">{info.getValue()}</span>),
                 header: () => "Point",
             },
             {
                 accessorKey: "type",
                 header: "Type",
                 cell: ({ getValue }) => {
-                    const type = getValue().toUpperCase();
-                    const typeClasses =
-                        type === "QCM"
-                            ? "text-white bg-blue-500 px-2 py-1 rounded"
-                            : "text-white bg-green-500 px-2 py-1 rounded";
-                    return <span className={typeClasses}>{type}</span>;
+                    return <Chip type={getValue()==='qcm' ? "success" : "error"}>
+                    {getValue()==='qcm' ? "QCM" : "OUVERTE"}
+                </Chip>;
+                 
                 },
             },
             {

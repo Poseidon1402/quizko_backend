@@ -1,6 +1,5 @@
+import PrimaryButton from "./PrimaryButton";
 import SecondaryButton from "./SecondaryButton";
-import SuccessButton from "./SuccessButton";
-
 
 export default function DeletionConfirmation({
     name,
@@ -8,7 +7,7 @@ export default function DeletionConfirmation({
     handleDeleteSubmit,
 }) {
     return (
-        <div className=" space-y-4 py-5 text-white">
+        <div className=" space-y-4 py-5 text-black">
             <p className="text-center">
                 Voulez-vous vraiment supprimer {name} ?
             </p>
@@ -20,7 +19,7 @@ export default function DeletionConfirmation({
                 >
                     Annuler
                 </SecondaryButton>
-                <SuccessButton onClick={handleDeleteSubmit}>Oui</SuccessButton>
+                <PrimaryButton onClick={handleDeleteSubmit}>Oui</PrimaryButton>
             </div>
         </div>
     );

@@ -28,8 +28,8 @@ export default function Dashboard({ auth, count }) {
     return (
         <AuthenticatedLayout user={auth.user}>
             <Head title="Dashboard" />
-            <Breadcrumb pageName="Dashboard" />
-            <div className="py-12">
+            {/* <Breadcrumb pageName="Dashboard" /> */}
+            <div className="">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                         {count && (
@@ -66,7 +66,7 @@ export default function Dashboard({ auth, count }) {
                         )}
                     </div>
                     <div className="p-5 shadow-sm border-t border rounded-lg">
-                        <h3 className="text-lg font-semibold mb-3 relative">
+                        <h3 className="text-lg text-black font-semibold mb-3 relative">
                             Utilisateurs Connectés
                             <span className="absolute top-0 right-0 transform translate-x-2 -translate-y-2 inline-block text-xs bg-red-800 text-white rounded-full px-2 py-0.5">
                                 {authenticatedUsers.length > 0 && authenticatedUsers.length}
@@ -79,7 +79,7 @@ export default function Dashboard({ auth, count }) {
                                         <div className="flex-shrink-0">
                                             <UserIcon className="h-8 w-8 text-gray-600" />
                                         </div>
-                                        <div className="text-sm font-medium text-gray-900">{user.name}</div>
+                                        <div className="text-sm font-medium text-black">{user.name}</div>
                                     </li>
                                 ))}
                             </ul>

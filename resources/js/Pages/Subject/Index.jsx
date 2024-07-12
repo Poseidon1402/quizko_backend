@@ -7,6 +7,7 @@ import { useEffect, useMemo, useState } from "react";
 import SecondaryButton from "@/Components/SecondaryButton";
 import DeletionConfirmation from "@/Components/DeletionConfirmation";
 import Breadcrumb from "@/Components/Breadcrumbs/Breadcrumb";
+import PrimaryButton from "@/Components/PrimaryButton";
 
 export default function Index({ auth, subjects, questions }) {
     const [showCreationModal, setShowCreationModal] = useState(false);
@@ -90,8 +91,8 @@ export default function Index({ auth, subjects, questions }) {
     return (
         <AuthenticatedLayout user={auth.user}>
             <Head title="Sujets" />
-            <Breadcrumb pageName="Sujets" />
-            <div className="py-12">
+            {/* <Breadcrumb pageName="Sujets" /> */}
+            <div className="">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="mb-4 flex justify-between items-center space-x-4">
                         <div className="flex items-center space-x-4">
@@ -106,7 +107,7 @@ export default function Index({ auth, subjects, questions }) {
                         </div>
                         <Link
                             href={route("subjects.create")}
-                            className="inline-flex items-center justify-center rounded-md bg-meta-3 py-2 px-5 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+                            className="inline-flex items-center justify-center rounded-full bg-black py-2 px-5 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
                         >
                             Ajouter un sujet
                         </Link>
@@ -139,11 +140,13 @@ export default function Index({ auth, subjects, questions }) {
                 title="Questions du sujet"
                 onClose={() => setShowQuestionsModal(false)}
             >
-                <div className="p-4 m-5 text-white">
-                    <h1 className="text-md text-center mb-4">
+                <div className="p-4 m-5 text-black">
+                    <div className="bg-black text-white rounded-md p-2">
+                    <h1 className="text-md text-center">
                         Sujet : {selectedData?.subject}{" "}
                         <span className="text-red-400">({selectedData?.total_points} points</span>)
                     </h1>
+                    </div>
                     <h2 className="text-lg font-bold mb-2">
                         Nombre des questions :{" "}
                         <span className="text-gray-700 border-b-2">
@@ -161,9 +164,9 @@ export default function Index({ auth, subjects, questions }) {
                     </div>
                 </div>
                 <div className="flex items-center border-t p-2 dark:border-gray-600 justify-center m-4">
-                    <SecondaryButton className="mx-4" onClick={() => setShowQuestionsModal(false)}>
+                    <PrimaryButton className="mx-4" onClick={() => setShowQuestionsModal(false)}>
                         Annuler
-                    </SecondaryButton>
+                    </PrimaryButton>
                 </div>
             </Modal>
         </AuthenticatedLayout>
@@ -176,7 +179,7 @@ const useColumns = (props) => {
             {
                 accessorKey: "subject",
                 cell: (info) => (
-                    <span className="bg-blue-600 p-2 rounded-md text-white">{info.getValue()}</span>
+                    <span className="bg-black p-2 rounded-md text-white">{info.getValue()}</span>
                 ),
                 header: () => "Sujet",
             },
@@ -188,7 +191,7 @@ const useColumns = (props) => {
             {
                 accessorKey: "total_points",
                 cell: (info) => (
-                    <span className="bg-green-400 p-1 rounded-md text-white">{info.getValue()}</span>
+                    <span className="bg-brown-500 p-1 rounded-md text-white">{info.getValue()}</span>
                 ),
                 header: () => "Total Points",
             },

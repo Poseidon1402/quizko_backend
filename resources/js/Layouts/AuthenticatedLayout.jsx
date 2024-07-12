@@ -1,5 +1,4 @@
 import Header from "@/Components/Header/index";
-import Navbar from "@/Components/Navbar";
 import Sidebar from "@/Components/Sidebar/index";
 import { PropsWithChildren, ReactNode, useState } from "react";
 
@@ -11,7 +10,7 @@ export default function Authenticated({
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
     return (
-        <div className="dark:bg-boxdark-2 dark:text-bodydark">
+        <div className="bg-gray dark:text-bodydark">
         {/* <!-- ===== Page Wrapper Start ===== --> */}
         <div className="flex h-screen overflow-hidden">
           {/* <!-- ===== Sidebar Start ===== --> */}

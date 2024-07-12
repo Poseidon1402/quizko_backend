@@ -16,6 +16,9 @@ export default {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
             colors: {
+                brown: {
+                    500: '#a52a2a', 
+                  },
                 current: 'currentColor',
                 transparent: 'transparent',
                 white: '#FFFFFF',

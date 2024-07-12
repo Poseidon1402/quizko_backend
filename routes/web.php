@@ -134,7 +134,7 @@ Route::middleware('auth')->prefix('results')->group(function () {
 
 Route::middleware('auth')->prefix('students-answers')->group(function () {
     Route::get('/{id}', [CandidateAnswerController::class, 'index'])->can('viewAny', CandidateAnswer::class)->name('student_answers.index');
-    Route::get('/{candidate_id}', [CandidateAnswerController::class, 'candidateInterviewAnswers'])->name('student_answers.studentTestAnswers');//student
+    Route::get('/{candidate_id}/{interview_id}', [CandidateAnswerController::class, 'candidateInterviewAnswers'])->name('student_answers.studentTestAnswers');//student
     Route::post('/', [CandidateAnswerController::class, 'store'])->can('create', CandidateAnswer::class)->name('student_answers.store');//student
     Route::put('/{id}', [CandidateAnswerController::class, 'store'])->can('update', CandidateAnswer::class)->name('student_answers.update');
     Route::delete('/{id}', [CandidateAnswerController::class, 'destroy'])->can('delete', CandidateAnswer::class)->name('student_answers.destroy');

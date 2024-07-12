@@ -8,8 +8,10 @@ import { useEffect, useMemo, useState } from "react";
 import Avatar from "@/Components/Avatar";
 import { Transition } from "@headlessui/react";
 import DeletionConfirmation from "@/Components/DeletionConfirmation";
-import Breadcrumb from "@/Components/Breadcrumbs/Breadcrumb";
-import SuccessButton from "@/Components/SuccessButton";
+import PrimaryButton from "@/Components/PrimaryButton";
+import Chip from "@/Components/Chip";
+import { generateUniqueColor } from "@/Utils/generateUniqueColor";
+import Edit from "./Edit";
 
 export default function Index({ auth, candidates, posts }) {
     const [showCreationModal, setShowCreationModal] = useState(false);
@@ -18,7 +20,6 @@ export default function Index({ auth, candidates, posts }) {
     const [selectedData, setSelectedData] = useState(null);
     const [filterName, setFilterName] = useState("");
     const [filterClass, setFilterClass] = useState("");
-
     const {
         data,
         setData,
@@ -55,6 +56,10 @@ export default function Index({ auth, candidates, posts }) {
         onDelete: (data) => {
             setSelectedData(data);
             setShowDeletionModal(true);
+        },
+        onEdit: (candidate) => {
+            setSelectedData(candidate);
+             setShowEditionModal(true);
         },
     });
 
@@ -98,12 +103,12 @@ export default function Index({ auth, candidates, posts }) {
             user={auth.user}
         >
             <Head title="Étudiant" />
-            <Breadcrumb pageName="Étudiant" />
-            <div className="py-12">
+            {/* <Breadcrumb pageName="Étudiant" /> */}
+            <div className="bg-white py-1">
                 {/* <ImportExcel /> */}
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                  <div className="mb-4 flex justify-between items-center space-x-4">
-                     <div className="flex items-center space-x-4">
+                     <div className="flex items-center space-x-4 text-black">
                          <label className="font-semibold">Filtrer par :</label>
                                 <input
                                     type="text"
@@ -125,9 +130,9 @@ export default function Index({ auth, candidates, posts }) {
                                     ))}
                                 </select>
                         </div>
-                        <SuccessButton onClick={() => setShowCreationModal(true)}>
+                        <PrimaryButton onClick={() => setShowCreationModal(true)}>
                             Ajouter un étudiant
-                        </SuccessButton>
+                        </PrimaryButton>
                     </div>
                     <Datagrid
                         columns={columns}
@@ -138,8 +143,10 @@ export default function Index({ auth, candidates, posts }) {
                 </div>
                 <Modal
                     show={showCreationModal}
-                    title="Ajouter un étudiant"
-                    onClose={() => setShowCreationModal(false)}
+                    title={"Ajouter un étudiant"}
+                    onClose={() => {
+                        setShowCreationModal(false);
+                    }}
                 >
                     <Transition
                         show={hasErrors}
@@ -153,22 +160,27 @@ export default function Index({ auth, candidates, posts }) {
                         </p>
                     </Transition>
                     <Form
-                        mode={showEditionModal ? "edition" : "creation"}
+                        mode={"creation"}
                         data={data}
                         setData={setData}
                         errors={errors}
                         processing={processing}
                         onSubmit={
-                            showEditionModal
-                                ? handleEditionSubmit
-                                : handleCreationSubmit
+                             handleCreationSubmit
                         }
                         onCancel={() => {
                             cancel();
-                            setShowCreationModal(false);
+                                setShowCreationModal(false);
                         }}
                     />
                 </Modal>
+                 <Modal
+                        show={showEditionModal}
+                        title="Modifier un étudiant"
+                        onClose={() => setShowEditionModal(false)}
+                    >
+                        <Edit posts={posts}  onCancel={() => setShowEditionModal(false)} candidate={selectedData}/> 
+                    </Modal>
                 <Modal
                         show={showDeletionModal}
                         title="Supprimer un étudiant"
@@ -196,7 +208,7 @@ const useColumns = (props) => {
             {
                 accessorKey: "registration_number",
                 cell: (info) =>
-                (<span className="bg-blue-600 p-2 rounded-md text-white">{info.getValue()}</span>),  
+                (<span className="bg-gray p-2 rounded-md text-black">{info.getValue()}</span>),  
                 header: () => "Matricule",
             },
             {
@@ -227,22 +239,30 @@ const useColumns = (props) => {
                         </div>
                     );
                 },
-                header: () => "Courtier",
+                header: () => "Candidat",
             },
             {
                 accessorKey: "gender",
                 cell: (info) => (
-                    <span className={`px-2 py-1 rounded-md ${
-                        info.getValue() === 'masculine' ? 'bg-blue-100 text-blue-800' : 'bg-pink-100 text-pink-800'
-                    }`}>
-                       {info.getValue() === 'masculine' ? 'Masculin' : 'Féminin'}
-                    </span>
-                ),
+                   <Chip type={info.getValue()==='feminine' ? "success" : "error"}>
+                        {info.getValue()==='feminine' ? "Féminin" : "Masculin"}
+                    </Chip>
+                  ),
                 header: () => "Genre",
             },
             {
                 accessorKey: "post.name",
-                cell: (info) => `${info.getValue()}`,
+                cell: (info) => {
+                    const color = generateUniqueColor(info.getValue());
+                    return (
+                        <span
+                            className={`text-white rounded-md text-xs p-2`}
+                            style={{ backgroundColor: color }}
+                        >
+                            {info.getValue()}
+                        </span>
+                    );
+                },
                 header: () => "Classe",
             },
             {
@@ -250,6 +270,17 @@ const useColumns = (props) => {
                 id: "id",
                 cell: (info) => (
                     <div className="flex space-x-1">
+                        <button
+                            className={
+                                "p-1 border border-transparent rounded-md"
+                            }
+                            onClick={() =>{ 
+                                props.onEdit(info.getValue());
+                             }}
+                        >
+                          <PencilIcon className="w-5 h-5 text-green-600" /> 
+                        
+                        </button>
                         <button
                            className={
                             "p-1 border border-transparent rounded-md"

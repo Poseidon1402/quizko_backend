@@ -133,10 +133,7 @@ class InterviewController extends Controller
     public function checkInterviewExpiration($interview_id)
     {
         $interview = Interview::findOrFail($interview_id);
-        $currentDateTime = Carbon::now();
-        $isExpired = $currentDateTime->gt($interview->end_date);
-
-        return response()->json(['is_expired' => $isExpired]);
+       
     }
 
     public function activateInterview($interview_id)
@@ -145,9 +142,7 @@ class InterviewController extends Controller
         $interview->isActive = true; 
         $interview->save();
     
-        broadcast(new InterviewStatusChanged($interview->id, $interview->isActive));
-    
-        return response()->json(['message' => 'Interview activated successfully']);
+      
     }
 
 }

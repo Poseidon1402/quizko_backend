@@ -7,6 +7,7 @@ import InputLabel from "@/Components/InputLabel";
 import TextInput from "@/Components/TextInput";
 import { MultiSelect } from "react-multi-select-component";
 import SuccessButton from "@/Components/SuccessButton";
+import PrimaryButton from "@/Components/PrimaryButton";
 
 export default function Index({ auth, questions }) {
     const [selectedQuestions, setSelectedQuestions] = useState([]);
@@ -34,8 +35,8 @@ export default function Index({ auth, questions }) {
     return (
         <AuthenticatedLayout user={auth.user}>
             <Head title="Ajouter un sujet" />
-            <Breadcrumb pageName="Ajouter un sujet" />
-            <div className="py-12">
+            {/* <Breadcrumb pageName="Ajouter un sujet" /> */}
+            <div className="">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                     <div className="p-4 sm:p-8 bg-gray-100 shadow sm:rounded-lg">
                         <form className="p-5" onSubmit={handleCreationSubmit}>
@@ -57,7 +58,7 @@ export default function Index({ auth, questions }) {
                                 </div>
                             </fieldset>
                             <div className="m-2">
-                                <h2 className="text-gray-700 mb-2">Sélectionnez les questions :</h2>
+                                <h2 className="text-black mb-2">Sélectionnez les questions :</h2>
                                 <MultiSelect
                                     options={questions.map((question) => ({
                                         label: question.question,
@@ -94,13 +95,13 @@ export default function Index({ auth, questions }) {
                                 >
                                     Annuler
                                 </Link>
-                                <SuccessButton
+                                <PrimaryButton
                                     className="ml-4"
                                     type="submit"
                                     disabled={processing}
                                 >
                                     Créer
-                                </SuccessButton>
+                                </PrimaryButton>
                             </div>
                         </form>
                     </div>
