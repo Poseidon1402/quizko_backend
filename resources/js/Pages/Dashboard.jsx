@@ -7,24 +7,21 @@ import {
     BookOpenIcon,
 } from "@heroicons/react/24/solid";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import Breadcrumb from "@/Components/Breadcrumbs/Breadcrumb";
+import socket from "@/Utils/socket";
 
 export default function Dashboard({ auth, count }) {
-    const [authenticatedUsers, setAuthenticatedUsers] = useState([]);
-
+    const [users, setUsers] = useState([]);
+    
     useEffect(() => {
-        fetchAuthenticatedUsers();
-    }, []);
+        socket.on('updateUsers', (usersData) => {
+            setUsers(usersData);
+        });
 
-    const fetchAuthenticatedUsers = async () => {
-        try {
-            const response = await axios.get('/authenticated-users');
-            setAuthenticatedUsers(response.data.users);
-        } catch (error) {
-            console.error("Error fetching authenticated users:", error);
-        }
-    };
+        return () => {
+            socket.off('updateUsers');
+        };
+    }, []);
+   
     return (
         <AuthenticatedLayout user={auth.user}>
             <Head title="Dashboard" />
@@ -69,18 +66,22 @@ export default function Dashboard({ auth, count }) {
                         <h3 className="text-lg text-black font-semibold mb-3 relative">
                             Utilisateurs Connectés
                             <span className="absolute top-0 right-0 transform translate-x-2 -translate-y-2 inline-block text-xs bg-red-800 text-white rounded-full px-2 py-0.5">
-                                {authenticatedUsers.length > 0 && authenticatedUsers.length}
+                                {users.length > 0 && users.length}
                             </span>
                         </h3>
                         <div className="overflow-y-auto max-h-80">
                             <ul className="divide-y divide-gray-200">
-                                {authenticatedUsers.map((user) => (
-                                    <li key={user.id} className="py-4 flex items-center gap-4 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 rounded-lg">
-                                        <div className="flex-shrink-0">
-                                            <UserIcon className="h-8 w-8 text-gray-600" />
+                                {users.map((user) => (
+                                     <li key={user.id} className="py-4 flex items-center justify-between hover:bg-gray-100 px-3 rounded-lg transition duration-300">
+                                        <div className="flex items-center gap-4">
+                                            <div className="flex-shrink-0 relative">
+                                                <UserIcon className="h-8 w-8 text-gray-600" />
+                                                <span className="absolute bottom-0 right-0 h-3 w-3 bg-green-500 rounded-full border-2 border-white"></span>
+                                            </div>
+                                            <div className="text-sm font-medium text-black">{user.name}</div>
                                         </div>
-                                        <div className="text-sm font-medium text-black">{user.name}</div>
-                                    </li>
+                                        <div className="text-sm text-gray-500 bg-gray-200 px-3 py-1 rounded-full">{user.registration_number}</div>
+                                 </li>
                                 ))}
                             </ul>
                         </div>

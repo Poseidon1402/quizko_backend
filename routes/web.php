@@ -119,10 +119,13 @@ Route::middleware('auth')->prefix('subjects')->group(function () {
 });
 
 Route::middleware('auth')->prefix('tests')->group(function () {
+    Route::get('/current/{interview_id}', [InterviewController::class, 'current'])->can('viewAny', Interview::class)->name('tests.current');
     Route::get('/{post_id}', [InterviewController::class, 'getPostInterview'])->can('viewAny', Interview::class)->name('tests.getPostTest');//student
     Route::get('/is-expired/{interview_id}', [InterviewController::class, 'checkInterviewExpiration'])->name('tests.checkInterviewExpiration');//student
     Route::get('/show/{interview_id}', [InterviewController::class, 'show2'])->can('viewAny', Interview::class)->name('tests.show');
     Route::get('/', [InterviewController::class, 'index'])->can('viewAny', Interview::class)->name('tests.index');
+    Route::post('/active/{interview_id]', [InterviewController::class, 'activateInterview'])->can('create', Interview::class)->name('tests.activateInterview');
+    Route::post('/expire/{interview_id]', [InterviewController::class, 'expireInterview'])->can('create', Interview::class)->name('tests.expireInterview');
     Route::post('/', [InterviewController::class, 'store'])->can('create', Interview::class)->name('tests.store');
     Route::put('/{id}', [InterviewController::class, 'update'])->can('create', Interview::class)->name('tests.update');
     Route::delete('/{id}', [InterviewController::class, 'destroy'])->can('create', Interview::class)->name('tests.destroy');

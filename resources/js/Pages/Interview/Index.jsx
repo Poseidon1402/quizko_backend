@@ -287,6 +287,12 @@ const useColumns = (props) => {
                 id: "id",
                 cell: (info) => (
                     <div className="flex space-x-2">
+                        <Link
+                            href={route("tests.current",info.getValue())}
+                            className="p-1 border border-transparent rounded-md"
+                        >
+                             <EyeIcon className="w-5 h-5 text-graydark" />
+                        </Link>
                         <button
                             className={
                                 "p-1 border border-transparent rounded-md"
