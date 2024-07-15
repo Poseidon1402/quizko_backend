@@ -9,7 +9,7 @@ class Interview extends Model
 {
     use HasFactory;
 
-    protected $fillable=['id','name','start_date','end_date','time','isExpired', 'post_id', 'subject_id'];
+    protected $fillable=['id','name','start_date','end_date','time','isExpired', 'post_id', 'subject_id','is_active'];
 
     public function post(){
         return $this->belongsTo(Post::class, 'post_id');

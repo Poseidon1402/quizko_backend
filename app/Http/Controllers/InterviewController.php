@@ -71,7 +71,7 @@ class InterviewController extends Controller
      * Crée un nouvel entretien avec des sujets associés.
      *
      * @param  Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @
      */
     public function store(Request $request)
     {
@@ -121,7 +121,14 @@ class InterviewController extends Controller
         redirect(route('tests.index'));
     }
 
-
+    public function current($interview_id)
+    {
+        $interview = Interview::findOrFail($interview_id);
+       $interview->load(["subject","post"]);
+       return Inertia::render('Interview/Current', [
+        'interview' => $interview,
+    ]);
+    }
     public function destroy($id)
     {
         $interview = Interview::findOrFail($id);
@@ -136,15 +143,20 @@ class InterviewController extends Controller
        
     }
 
-    public function activateInterview($interview_id)
+    public function activateInterview(Request $request)
     {
+        $interview_id= $request->interview_id;
         $interview = Interview::findOrFail($interview_id);
-        $interview->isActive = true; 
+        $interview->is_active = true; 
         $interview->save();
-    
-      
     }
-
+    public function expireInterview(Request $request)
+    {
+        $interview_id= $request->interview_id;
+        $interview = Interview::findOrFail($interview_id);
+        $interview->is_expired = true; 
+        $interview->save();
+    }
 }
 
 
