@@ -11,10 +11,13 @@ import { Transition } from "@headlessui/react";
 import Breadcrumb from "@/Components/Breadcrumbs/Breadcrumb";
 import { generateUniqueColor } from "@/Utils/generateUniqueColor";
 import Chip from "@/Components/Chip";
+import Edit from "../Candidate/Edit";
+import DeletionConfirmation from "@/Components/DeletionConfirmation";
 
-export default function Index({ auth, post }) {
+export default function Index({ auth, post, posts }) {
     const [showCreationModal, setShowCreationModal] = useState(false);
     const [showDeletionModal, setShowDeletionModal] = useState(false);
+    const [showDetailModal, setShowDetailModal] = useState(false);
     const [showEditionModal, setShowEditionModal] = useState(false);
     const [selectedData, setSelectedData] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
@@ -49,6 +52,11 @@ export default function Index({ auth, post }) {
             setSelectedData(data);
             setShowDeletionModal(true);
         },
+        onShow: (candidate) => {
+            setSelectedData(candidate);
+             setShowDetailModal(true);
+              //onsole.log(selectedData);
+         },
     });
 
     useEffect(() => {
@@ -144,6 +152,65 @@ export default function Index({ auth, post }) {
                         }}
                     />
                 </Modal>
+                  <Modal
+                        show={showEditionModal}
+                        title="Modifier un étudiant"
+                        onClose={() => setShowEditionModal(false)}
+                    >
+                        <Edit posts={posts}  onCancel={() => setShowEditionModal(false)} candidate={selectedData}/> 
+                    </Modal>
+                <Modal
+                        show={showDetailModal}
+                        title="Note de l'étudiant"
+                        onClose={() => setShowDetailModal(false)}
+                    >
+                        
+                                    <div className="max-h-30 overflow-y-auto">
+                                        {selectedData?.candidate_notes.length > 0 ? (
+                                            selectedData?.candidate_notes.map((note) => (
+                                                <div 
+                                                    key={note.id} 
+                                                    className="flex bg-gray-2 text-black rounded-md my-2 p-3"
+                                                >
+                                                     <div className="w-2/3">
+                                                             {note.interview.name}
+                                                     </div>
+                                                    <span className="w-1/3 rounded-md text-white text-end">
+                                                        <span className={`rounded-md p-2 ${note.note !== null?`bg-red-800`:`bg-green-800`}`}>
+                                                            {note.note !== null ? `${note.note}` : `${note.interim_note}`}
+                                                        </span>
+                                                        <Link
+                                                        href={route("student_answers.studentTestAnswers",[selectedData?.id, note.interview.id])}
+                                                        className=" bg-blue-900 ms-3 inline-flex items-center justify-center rounded-md p-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-2 xl:px-3"
+                                                        >
+                                                            <EyeIcon className="w-3 h-3" />
+                                                        </Link>
+                                                    </span>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <div className="bg-red-800 text-white rounded-md my-2 p-3">
+                                                Aucune note disponible
+                                            </div>
+                                        )}
+                            </div>
+                    </Modal>
+                    <Modal
+                        show={showDeletionModal}
+                        title="Supprimer un étudiant"
+                        onClose={() => setShowDeletionModal(false)}
+                    >
+                        <DeletionConfirmation
+                            name={
+                                selectedData?.user.name
+                            }
+                            onCancel={() => {
+                                cancel();
+                                setShowDeletionModal(false);
+                            }}
+                            handleDeleteSubmit={handleDeletionSubmit}
+                        /> 
+                    </Modal>
             </div>
         </AuthenticatedLayout>
     );
@@ -203,6 +270,19 @@ const useColumns = (props) => {
                 id: "id",
                 cell: (info) => (
                     <div className="flex space-x-1">
+                          <button
+                            className={
+                                "p-1 border border-transparent rounded-md"
+                            }
+                            onClick={() =>{ 
+                                props.onShow(info.getValue());
+                             }}
+                        >
+                          <span className="h-5 w-5 rounded-md text-yellow-800"> 
+                             Note
+                          </span> 
+                        
+                        </button>
                         <button
                             className={
                                 "p-1 border border-transparent rounded-md"

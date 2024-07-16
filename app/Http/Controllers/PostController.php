@@ -63,12 +63,14 @@ class PostController extends Controller
     public function show($id)
     {
         $post = Post::find($id);
-        $post->load('candidates.user');
+        $posts = Post::all();
+        $post->load(['candidates.user','candidates.candidate_notes.interview']);
         if (!$post) {
             return back();
         }
         return Inertia::render('Post/Detail', [
             'post' => $post,
+            'posts' => $posts,
         ]);
     }
 

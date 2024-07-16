@@ -19,7 +19,7 @@ class CandidateController extends Controller
     public function index()
     {
         $posts = Post::all();   
-        $candidates = Candidate::with('user', 'post')->get();
+        $candidates = Candidate::with('user', 'post', 'candidate_notes.interview')->get();
        return Inertia::render('Candidate/Index', [
         'candidates' => $candidates,
         'posts' => $posts,
