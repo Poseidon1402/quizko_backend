@@ -1,9 +1,9 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import Datagrid from "@/Components/Datagrid";
 import Modal from "@/Components/Modal";
-import { EnvelopeIcon, PencilIcon, PhoneIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { EnvelopeIcon, EyeIcon, PencilIcon, PhoneIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Form from "./Form";
-import { Head, useForm } from "@inertiajs/react";
+import { Head, Link, useForm } from "@inertiajs/react";
 import { useEffect, useMemo, useState } from "react";
 import Avatar from "@/Components/Avatar";
 import { Transition } from "@headlessui/react";
@@ -17,6 +17,7 @@ export default function Index({ auth, candidates, posts }) {
     const [showCreationModal, setShowCreationModal] = useState(false);
     const [showDeletionModal, setShowDeletionModal] = useState(false);
     const [showEditionModal, setShowEditionModal] = useState(false);
+    const [showDetailModal, setShowDetailModal] = useState(false);
     const [selectedData, setSelectedData] = useState(null);
     const [filterName, setFilterName] = useState("");
     const [filterClass, setFilterClass] = useState("");
@@ -44,7 +45,6 @@ export default function Index({ auth, candidates, posts }) {
         password: "",
         password_confirmation: "",
     });
-
     const filteredCandidates = candidates.filter(candidate => {
         return (
             (candidate.user.name.toLowerCase().includes(filterName.toLowerCase()) || candidate.registration_number.toLowerCase().includes(filterName.toLowerCase())) &&
@@ -60,6 +60,11 @@ export default function Index({ auth, candidates, posts }) {
         onEdit: (candidate) => {
             setSelectedData(candidate);
              setShowEditionModal(true);
+        },
+        onShow: (candidate) => {
+           setSelectedData(candidate);
+            setShowDetailModal(true);
+             //onsole.log(selectedData);
         },
     });
 
@@ -97,7 +102,7 @@ export default function Index({ auth, candidates, posts }) {
         setSelectedData(null);
         setShowDeletionModal(false);
     };
-
+console.log(candidates);
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -123,7 +128,7 @@ export default function Index({ auth, candidates, posts }) {
                                     className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 >
                                     <option value="">Toutes les classes</option>
-                                    {posts.map((post) => (
+                                    {posts.length>0 && posts.map((post) => (
                                         <option key={post.id} value={post.name}>
                                             {post.name}
                                         </option>
@@ -196,6 +201,42 @@ export default function Index({ auth, candidates, posts }) {
                             }}
                             handleDeleteSubmit={handleDeletionSubmit}
                         /> 
+                    </Modal>
+                    <Modal
+                        show={showDetailModal}
+                        title="Note de l'étudiant"
+                        onClose={() => setShowDetailModal(false)}
+                    >
+                        
+                                    <div className="max-h-30 overflow-y-auto">
+                                        {selectedData?.candidate_notes.length > 0 ? (
+                                            selectedData?.candidate_notes.map((note) => (
+                                                <div 
+                                                    key={note.id} 
+                                                    className="flex bg-gray-2 text-black rounded-md my-2 p-3"
+                                                >
+                                                     <div className="w-2/3">
+                                                             {note.interview.name}
+                                                     </div>
+                                                    <span className="w-1/3 rounded-md text-white text-end">
+                                                        <span className={`rounded-md p-2 ${note.note !== null?`bg-red-800`:`bg-green-800`}`}>
+                                                            {note.note !== null ? `${note.note}` : `${note.interim_note}`}
+                                                        </span>
+                                                        <Link
+                                                        href={route("student_answers.studentTestAnswers",[selectedData?.id, note.interview.id])}
+                                                        className=" bg-blue-900 ms-3 inline-flex items-center justify-center rounded-md p-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-2 xl:px-3"
+                                                        >
+                                                            <EyeIcon className="w-3 h-3" />
+                                                        </Link>
+                                                    </span>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <div className="bg-red-800 text-white rounded-md my-2 p-3">
+                                                Aucune note disponible
+                                            </div>
+                                        )}
+                            </div>
                     </Modal>
             </div>
         </AuthenticatedLayout>
@@ -270,6 +311,19 @@ const useColumns = (props) => {
                 id: "id",
                 cell: (info) => (
                     <div className="flex space-x-1">
+                        <button
+                            className={
+                                "p-1 border border-transparent rounded-md"
+                            }
+                            onClick={() =>{ 
+                                props.onShow(info.getValue());
+                             }}
+                        >
+                          <span className="h-5 w-5 rounded-md text-yellow-800"> 
+                             Note
+                          </span> 
+                        
+                        </button>
                         <button
                             className={
                                 "p-1 border border-transparent rounded-md"
