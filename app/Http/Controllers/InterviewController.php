@@ -115,7 +115,7 @@ class InterviewController extends Controller
         $interview->end_date = $request->input('end_date');
         $interview->time = $request->input('time');
         $interview->post_id = $request->input('post_id');
-        $interview->post_id = $request->input('subject_id');
+        $interview->subject_id = $request->input('subject_id');
 
         $interview->save();
         redirect(route('tests.index'));

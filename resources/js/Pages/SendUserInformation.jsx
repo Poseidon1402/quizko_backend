@@ -25,7 +25,7 @@ const SendUserInfo = () => {
 
     return (
         <div>
-            {interviewActive ? (
+            {/* {interviewActive ? (
                 <div className='bg-red-800 p-3 rounded-md text-white m-2'>
                     Test en cours
                 </div>
@@ -38,7 +38,7 @@ const SendUserInfo = () => {
                 </div>
             ) : (
                 <p className='bg-blue-800 p-3 rounded-md text-white m-2'>Test non expiré</p>
-            )}
+            )} */}
         </div>
     );
 };

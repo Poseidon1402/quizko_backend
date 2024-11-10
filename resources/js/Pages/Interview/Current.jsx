@@ -169,7 +169,7 @@ export default function Current({ auth, interview }) {
                     </div>
                 </div>
             </div>
-            {/* <SendUserInfo /> */}
+            <SendUserInfo />
         </AuthenticatedLayout>
     );
 }
