@@ -23,4 +23,7 @@ class Subject extends Model
     {
         return $this->belongsToMany(QuestionSubject::class, 'question_subjects');
     }
+    // public function questions() {
+    //     return $this->belongsToMany(Question::class, 'question_subject', 'subject_id', 'question_id'); // 'question_subject' is the pivot table name
+    // }
 }

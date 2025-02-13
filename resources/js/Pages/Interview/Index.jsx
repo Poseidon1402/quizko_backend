@@ -51,9 +51,9 @@ export default function Index({ auth, interviews, subjects, posts }) {
     });
 
     useEffect(() => {
-        if (hasErrors) {
-            reset("end_date", "post_id", "subject_id", "time");
-        }
+        // if (hasErrors) {
+        //     reset("end_date", "post_id", "subject_id", "time");
+        // }
 
         if (recentlySuccessful) {
             reset();
@@ -74,8 +74,9 @@ export default function Index({ auth, interviews, subjects, posts }) {
     };
 
     const handleEditionSubmit = (e) => {
+        e.preventDefault();
         put(route("tests.update", selectedData.id));
-        console.log(data);
+        console.log(data)
     };
 
     const handleDeletionSubmit = (e) => {
