@@ -331,3 +331,121 @@ export default function Form({
         </form>
     );
 }
+
+// import InputError from "@/Components/InputError";
+// import InputLabel from "@/Components/InputLabel";
+// import PrimaryButton from "@/Components/PrimaryButton";
+// import SecondaryButton from "@/Components/SecondaryButton";
+// import Select from "@/Components/Select";
+// import TextInput from "@/Components/TextInput";
+// import React, { useState, useEffect } from "react";
+
+// export default function Form({
+//     mode = "creation",
+//     data,
+//     setData,
+//     errors,
+//     processing,
+//     onReset,
+//     onSubmit,
+//     onCancel,
+// }) {
+//     const [answers, setAnswers] = useState([]);
+
+//     useEffect(() => {
+//         if (mode === "edition" && data.answers) {
+//             setAnswers(data.answers);
+//         } else {
+//             setAnswers([{ answer: "", is_correct: false }]);
+//         }
+//     }, [mode, data.answers]);
+
+//     const handleAddAnswer = () => {
+//         setAnswers([...answers, { answer: "", is_correct: false }]);
+//     };
+
+//     const handleRemoveAnswer = (index) => {
+//         const newAnswers = answers.filter((_, i) => i !== index);
+//         setAnswers(newAnswers);
+//         setData((prevData) => ({ ...prevData, answers: newAnswers })); // Use functional update
+//     };
+
+//     const handleAnswerChange = (index) => (e) => {
+//         const newAnswers = [...answers];
+//         newAnswers[index].answer = e.target.value;
+//         setAnswers(newAnswers);
+//         setData((prevData) => ({ ...prevData, answers: newAnswers })); // Use functional update
+//     };
+
+//     const handleCheckboxChange = (index) => (e) => {
+//         const newAnswers = [...answers];
+//         newAnswers[index].is_correct = e.target.checked;
+//         setAnswers(newAnswers);
+//         setData((prevData) => ({ ...prevData, answers: newAnswers })); // Use functional update
+//     };
+
+//     useEffect(() => {
+//         return () => {
+//             onReset?.();
+//         };
+//     }, []);
+
+//     const handleSubmit = (e) => {
+//         e.preventDefault();
+//         const formData = {
+//             ...data,
+//             answers: answers,
+//         };
+//         onSubmit(formData);
+//     };
+
+//     return (
+//         <form className="p-5" onSubmit={handleSubmit}>
+//             <div className="p-6 max-w-xl mx-auto bg-white rounded-lg shadow-md"> {/* White background */}
+//                 <fieldset className="gap-2">
+//                     {/* ... (Question, Point, Type fields - no changes needed) */}
+//                 </fieldset>
+
+//                 <div className="space-y-2">
+//                     <span className="text-md text-black">Réponses:</span> {/* Black text */}
+//                     {answers.map((answer, index) => (
+//                         <div key={index} className="flex items-center space-x-2">
+//                             <input
+//                                 type="text"
+//                                 value={answer.answer}
+//                                 onChange={handleAnswerChange(index)}
+//                                 className="block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-400 focus:ring focus:ring-blue-200"
+//                             />
+//                             {data.type === "qcm" && (
+//                                 <label className="flex items-center space-x-2">
+//                                     <input
+//                                         type="checkbox"
+//                                         checked={answer.is_correct}
+//                                         onChange={handleCheckboxChange(index)}
+//                                         className="rounded border-gray-300 shadow-sm focus:border-blue-400 focus:ring focus:ring-blue-200"
+//                                     />
+//                                     <span className="text-lg text-black">Correct</span> {/* Black text */}
+//                                 </label>
+//                             )}
+//                             {index > 0 && (
+//                                 <SecondaryButton type="button" onClick={() => handleRemoveAnswer(index)}>
+//                                     -
+//                                 </SecondaryButton>
+//                             )}
+//                         </div>
+//                     ))}
+//                     {data.type === "qcm" && (
+//                         <div className="flex items-center space-x-2">
+//                             <PrimaryButton type="button" onClick={handleAddAnswer}>
+//                                 +
+//                             </PrimaryButton>
+//                         </div>
+//                     )}
+//                 </div>
+//             </div>
+//             <div className="flex items-center justify-end mt-4">
+//                 {/* ... (Cancel and Submit buttons - no changes needed) */}
+//             </div>
+//         </form>
+//     );
+// }

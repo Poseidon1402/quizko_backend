@@ -76,6 +76,28 @@ class SubjectController extends Controller
            return redirect(route('subjects.index'));
         }
 
+        // public function update(Request $request, $id)
+        // {
+        //     $request->validate([
+        //         'subject' => 'required|string|max:255',
+        //         'questions' => 'required|array|min:1', // Validate questions in update
+        //     ]);
+        
+        //     $subject = Subject::findOrFail($id);
+        //     $subject->subject = $request->input('subject');
+        //     $subject->save();
+        
+        //     // Sync Questions (Detach old and attach new)
+        //     $subject->questions()->detach(); // Detach all existing questions
+        
+        //     $questionsData = $request->input('questions');
+        //     foreach ($questionsData as $question) {
+        //         $subject->questions()->attach($question);
+        //     }
+        
+        //     return redirect(route('subjects.index'));
+        // }
+
     public function destroy($id)
         {
             $subject= Subject::findOrFail($id); 

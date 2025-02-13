@@ -87,3 +87,80 @@ class QuestionController extends Controller
 
 
 }
+
+// public function store(Request $request)
+// {
+//     $request->validate([
+//         'question' => 'required|string|max:255',
+//         'point' => 'required|integer',
+//         'type' => 'required|string',
+//         'answers' => 'required|array',
+//         'answers.*.answer' => 'required|string|max:255',
+//         'answers.*.is_correct' => 'required|boolean',
+//     ]);
+
+//     $question = new Question();
+//     $question->question = $request->input('question');
+//     $question->point = $request->input('point');
+//     $question->type = $request->input('type');
+//     $question->save();
+
+//     foreach ($request->input('answers') as $answerData) {
+//         $answer = new Answer();
+//         $answer->answer = $answerData['answer'];
+//         $answer->is_correct = $answerData['is_correct'];
+//         $answer->question_id = $question->id;
+//         $answer->save();
+//     }
+
+//     return redirect(route('questions.index'));
+// }
+
+// public function show($id)
+// {
+//     $question = Question::findOrFail($id);
+//     $question->load('answers');
+//     return response()->json(['question' => $question]);
+// }
+
+// public function update(Request $request, $id)
+// {
+//     $request->validate([
+//         'question' => 'required|string|max:255',
+//         'point' => 'required|integer',
+//         'type' => 'required|string',
+//         'answers' => 'required|array', // Validate answers in update as well
+//         'answers.*.answer' => 'required|string|max:255',
+//         'answers.*.is_correct' => 'required|boolean',
+//     ]);
+
+//     $question = Question::findOrFail($id);
+
+//     $question->question = $request->input('question');
+//     $question->type = $request->input('type');
+//     $question->point = $request->input('point');
+
+//     $question->save();
+
+//     // Sync Answers (Delete old and add new)
+//     $question->answers()->delete(); // Delete existing answers
+
+//     foreach ($request->input('answers') as $answerData) {
+//         $answer = new Answer();
+//         $answer->answer = $answerData['answer'];
+//         $answer->is_correct = $answerData['is_correct'];
+//         $answer->question_id = $question->id;
+//         $answer->save();
+//     }
+
+
+//     return redirect(route('questions.index'));
+// }
+
+// public function destroy($id)
+// {
+//     $question = Question::findOrFail($id);
+//     $question->delete();
+
+//     return redirect(route('questions.index'));
+// }
